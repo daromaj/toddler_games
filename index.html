@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Gry dla Maluchów - Toddler Games</title>
+  <link rel="stylesheet" href="shared/common.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .menu-container {
+      max-width: 1200px;
+      width: 90%;
+      padding: var(--spacing-lg);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .menu-title {
+      font-size: 48px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: var(--spacing-lg);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-subtitle {
+      font-size: 28px;
+      color: #666;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .game-card {
+      background: white;
+      border-radius: 20px;
+      padding: var(--spacing-lg);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-md);
+      min-height: 200px;
+      border: 4px solid transparent;
+      transition: all var(--transition-medium) ease;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .game-card:hover {
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      border-color: var(--btn-bg);
+    }
+
+    .game-card:active {
+      transform: scale(0.98);
+    }
+
+    .game-icon {
+      font-size: 80px;
+      line-height: 1;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .game-card:nth-child(1) .game-icon { animation-delay: 0s; }
+    .game-card:nth-child(2) .game-icon { animation-delay: 0.2s; }
+    .game-card:nth-child(3) .game-icon { animation-delay: 0.4s; }
+    .game-card:nth-child(4) .game-icon { animation-delay: 0.6s; }
+    .game-card:nth-child(5) .game-icon { animation-delay: 0.8s; }
+    .game-card:nth-child(6) .game-icon { animation-delay: 1s; }
+
+    .game-card:hover .game-icon {
+      animation: celebrate 0.5s ease-in-out;
+    }
+
+    .game-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .game-description {
+      font-size: 18px;
+      color: #666;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-md);
+    }
+
+    .coming-soon {
+      opacity: 0.6;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .coming-soon::after {
+      content: 'Wkrótce';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #666;
+      border: 2px solid #999;
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) {
+      .menu-title { font-size: 36px; }
+      .menu-subtitle { font-size: 22px; }
+      .games-grid { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); }
+      .game-card { min-height: 150px; padding: var(--spacing-md); }
+      .game-icon { font-size: 60px; }
+      .game-title { font-size: 24px; }
+      .game-description { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-container">
+    <h1 class="menu-title">🎮 Gry dla Maluchów</h1>
+    <p class="menu-subtitle">Wybierz grę aby zacząć zabawę!</p>
+
+    <div class="games-grid">
+      <a href="games/balloons.html" class="game-card">
+        <div class="game-icon">🎈</div>
+        <div class="game-title">Baloniki</div>
+        <div class="game-description">Pukaj w kolorowe baloniki!</div>
+      </a>
+
+      <a href="games/drawing.html" class="game-card">
+        <div class="game-icon">🎨</div>
+        <div class="game-title">Rysowanie</div>
+        <div class="game-description">Rysuj paluszkiem!</div>
+      </a>
+
+      <a href="games/bubbles.html" class="game-card">
+        <div class="game-icon">📦</div>
+        <div class="game-title">Bąbelki</div>
+        <div class="game-description">Pukaj i pękaj bąbelki!</div>
+      </a>
+
+      <div class="game-card coming-soon">
+        <div class="game-icon">🐰</div>
+        <div class="game-title">Karmienie</div>
+        <div class="game-description">Nakarm zwierzątka!</div>
+      </div>
+
+      <div class="game-card coming-soon">
+        <div class="game-icon">🎹</div>
+        <div class="game-title">Pianino</div>
+        <div class="game-description">Graj na kolorowych klawiszach!</div>
+      </div>
+
+      <div class="game-card coming-soon">
+        <div class="game-icon">🔷</div>
+        <div class="game-title">Kształty</div>
+        <div class="game-description">Dopasuj kształty!</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="sound-toggle btn">🔊 Dźwięk</button>
+    </div>
+  </div>
+
+  <script src="shared/common.js"></script>
+  <script>
+    // Add click sound to all game cards
+    document.querySelectorAll('.game-card:not(.coming-soon)').forEach(card => {
+      card.addEventListener('click', () => {
+        soundManager.playSuccess();
+      });
+    });
+
+    // Prevent navigation on portrait mode
+    if (window.matchMedia("(orientation: portrait)").matches) {
+      document.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
+      });
+    }
+  </script>
+</body>
+</html>

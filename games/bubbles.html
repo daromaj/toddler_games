@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Bąbelki - Toddler Games</title>
+  <link rel="stylesheet" href="../shared/common.css">
+  <style>
+    .game-area {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+    }
+
+    .bubbles-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 15px;
+      max-width: 95%;
+      max-height: 90%;
+      padding: var(--spacing-md);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .bubble {
+      aspect-ratio: 1;
+      min-width: 60px;
+      max-width: 120px;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: all var(--transition-fast) ease;
+      box-shadow:
+        inset 0 -10px 20px rgba(255, 255, 255, 0.4),
+        inset 0 10px 20px rgba(0, 0, 0, 0.1),
+        0 5px 15px rgba(0, 0, 0, 0.3);
+      background: radial-gradient(circle at 30% 30%,
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(255, 255, 255, 0.4) 30%,
+        transparent 50%);
+      will-change: transform;
+    }
+
+    .bubble::before {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 30%;
+      height: 30%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, transparent 70%);
+    }
+
+    .bubble:hover {
+      transform: scale(1.1);
+    }
+
+    .bubble:active {
+      transform: scale(0.95);
+    }
+
+    .bubble.popped {
+      animation: bubblePop 0.3s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes bubblePop {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.3);
+        opacity: 0.7;
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    .score-panel {
+      position: absolute;
+      top: 100px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .score-label {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .score-value {
+      font-size: 42px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .pattern-btn {
+      margin: 10px 0;
+      padding: 10px 20px;
+      font-size: 18px;
+      width: 100%;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4ECDC4 0%, #44A08D 100%);
+      transition: width var(--transition-medium) ease;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) {
+      .bubbles-container {
+        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      }
+      .bubble {
+        min-width: 50px;
+        max-width: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h2 style="font-size: 32px; color: #333;">📦 Bąbelki</h2>
+    <button class="sound-toggle">🔊 Dźwięk</button>
+  </div>
+
+  <div class="game-area">
+    <div class="bubbles-container" id="bubblesContainer"></div>
+
+    <div class="score-panel">
+      <div class="score-label">Pękło</div>
+      <div class="score-value" id="scoreValue">0</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <button class="pattern-btn btn" id="patternBtn">🌈 Wzór</button>
+      <button class="pattern-btn btn" id="newGridBtn">🔄 Nowa</button>
+    </div>
+  </div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Bubble Wrap game logic
+    const container = document.getElementById('bubblesContainer');
+    const scoreValue = document.getElementById('scoreValue');
+    const progressFill = document.getElementById('progressFill');
+    const patternBtn = document.getElementById('patternBtn');
+    const newGridBtn = document.getElementById('newGridBtn');
+
+    let totalBubbles = 0;
+    let poppedCount = 0;
+    let currentPattern = 'rainbow';
+
+    const patterns = {
+      rainbow: ['#FF6B6B', '#FF9B54', '#FFE66D', '#95E1D3', '#4ECDC4', '#C77DFF', '#FFB6D9'],
+      gradient: ['#667eea', '#764ba2', '#f093fb', '#4facfe'],
+      random: () => `hsl(${Math.random() * 360}, 70%, 60%)`
+    };
+
+    function createBubbleGrid(rows = 6, cols = 8) {
+      // Clear existing bubbles
+      container.innerHTML = '';
+      poppedCount = 0;
+      totalBubbles = rows * cols;
+
+      // Adjust grid for screen size
+      const width = window.innerWidth;
+      if (width < 1024) {
+        cols = 6;
+        rows = 4;
+        totalBubbles = rows * cols;
+      }
+
+      // Set grid columns
+      container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+      // Create bubbles
+      for (let i = 0; i < totalBubbles; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+
+        // Apply pattern color
+        let color;
+        if (currentPattern === 'rainbow') {
+          color = patterns.rainbow[i % patterns.rainbow.length];
+        } else if (currentPattern === 'gradient') {
+          const index = Math.floor((i / totalBubbles) * patterns.gradient.length);
+          color = patterns.gradient[index];
+        } else {
+          color = patterns.random();
+        }
+
+        bubble.style.backgroundColor = color;
+
+        // Add click handler
+        bubble.addEventListener('click', () => popBubble(bubble));
+        bubble.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          popBubble(bubble);
+        });
+
+        container.appendChild(bubble);
+
+        // Stagger animation
+        bubble.style.animation = `bounce 0.5s ease-out ${i * 0.02}s`;
+      }
+
+      updateScore();
+    }
+
+    function popBubble(bubble) {
+      if (bubble.classList.contains('popped')) return;
+
+      bubble.classList.add('popped');
+      poppedCount++;
+
+      // Play sound with pitch variation
+      const pitch = 400 + (poppedCount % 8) * 50;
+      soundManager.playNote(pitch, 0.1);
+
+      // Vibrate
+      Utils.vibrate(20);
+
+      // Create particles
+      const rect = bubble.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const color = bubble.style.backgroundColor;
+      Utils.createParticles(x, y, color, 8);
+
+      updateScore();
+
+      // Check if all popped
+      if (poppedCount === totalBubbles) {
+        setTimeout(() => {
+          Utils.showCelebration('Wszystkie pękły! 🎉');
+          soundManager.playCelebration();
+          setTimeout(() => createBubbleGrid(), 2000);
+        }, 300);
+      }
+    }
+
+    function updateScore() {
+      scoreValue.textContent = poppedCount;
+      const progress = (poppedCount / totalBubbles) * 100;
+      progressFill.style.width = progress + '%';
+    }
+
+    // Pattern button
+    patternBtn.addEventListener('click', () => {
+      const patternKeys = Object.keys(patterns);
+      const currentIndex = patternKeys.indexOf(currentPattern);
+      const nextIndex = (currentIndex + 1) % patternKeys.length;
+      currentPattern = patternKeys[nextIndex];
+
+      createBubbleGrid();
+      soundManager.playSuccess();
+
+      const patternNames = {
+        rainbow: '🌈 Tęcza',
+        gradient: '🎨 Gradient',
+        random: '🎲 Losowo'
+      };
+      Utils.showCelebration(patternNames[currentPattern]);
+    });
+
+    // New grid button
+    newGridBtn.addEventListener('click', () => {
+      createBubbleGrid();
+      soundManager.playWhoosh();
+      Utils.showCelebration('Nowa siatka! ✨');
+    });
+
+    // Initialize game
+    function initGame() {
+      createBubbleGrid();
+      setTimeout(() => {
+        Utils.showCelebration('Pukaj bąbelki! 📦');
+      }, 500);
+    }
+
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        createBubbleGrid();
+      }, 500);
+    });
+
+    // Start game
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGame);
+    } else {
+      initGame();
+    }
+  </script>
+</body>
+</html>
