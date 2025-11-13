@@ -1,3 +1,7 @@
+# Address
+
+https://daromaj.github.io/toddler_games/
+
 # Toddler Games 🎮
 
 A collection of simple, engaging browser-based games designed for toddlers (ages 2-4). No build tools required - just pure HTML, CSS, and vanilla JavaScript that runs directly in the browser via GitHub Pages.
