@@ -55,6 +55,25 @@
         transform: translateY(-100vh) rotate(var(--rotation));
       }
     }
+
+    @media (max-width: 1024px) {
+      .score-display {
+        top: 10px;
+        right: 10px;
+        padding: 10px 20px;
+        font-size: 28px;
+        border-radius: 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .score-display {
+        top: 8px;
+        right: 8px;
+        padding: 8px 16px;
+        font-size: 24px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -113,7 +132,7 @@
       const rotation = Utils.randomInt(-30, 30);
       balloon.style.setProperty('--rotation', rotation + 'deg');
 
-      const duration = Utils.random(4, 8);
+      const duration = Utils.random(8, 15);
       balloon.style.animation = `float ${duration}s linear forwards`;
 
       // Create SVG balloon

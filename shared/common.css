@@ -276,14 +276,39 @@ body {
   }
 
   .game-header {
-    min-height: 70px;
-    padding: var(--spacing-sm);
+    min-height: 50px;
+    padding: 8px 12px;
+  }
+
+  .game-header h2 {
+    font-size: 20px !important;
   }
 
   .home-btn, .sound-toggle {
-    min-width: 50px;
-    min-height: 50px;
-    font-size: 24px;
+    min-width: 45px;
+    min-height: 45px;
+    padding: 8px;
+    font-size: 20px;
+  }
+}
+
+/* Even smaller adjustments for mobile phones */
+@media (max-width: 768px) {
+  .game-header {
+    min-height: 45px;
+    padding: 6px 10px;
+  }
+
+  .game-header h2 {
+    font-size: 18px !important;
+  }
+
+  .home-btn, .sound-toggle {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 6px;
+    font-size: 18px;
+    border-radius: 10px;
   }
 }
 
