@@ -97,13 +97,13 @@
     let gameActive = true;
 
     const colors = [
-      { name: 'red', color: '#FF6B6B', emoji: '🔴' },
-      { name: 'blue', color: '#4ECDC4', emoji: '🔵' },
-      { name: 'yellow', color: '#FFE66D', emoji: '🟡' },
-      { name: 'green', color: '#95E1D3', emoji: '🟢' },
-      { name: 'purple', color: '#C77DFF', emoji: '🟣' },
-      { name: 'orange', color: '#FF9B54', emoji: '🟠' },
-      { name: 'pink', color: '#FFB6D9', emoji: '🩷' }
+      { name: 'red', color: '#FF6B6B', emoji: '🔴', polish: 'Czerwony' },
+      { name: 'blue', color: '#4ECDC4', emoji: '🔵', polish: 'Niebieski' },
+      { name: 'yellow', color: '#FFE66D', emoji: '🟡', polish: 'Żółty' },
+      { name: 'green', color: '#95E1D3', emoji: '🟢', polish: 'Zielony' },
+      { name: 'purple', color: '#C77DFF', emoji: '🟣', polish: 'Fioletowy' },
+      { name: 'orange', color: '#FF9B54', emoji: '🟠', polish: 'Pomarańczowy' },
+      { name: 'pink', color: '#FFB6D9', emoji: '🩷', polish: 'Różowy' }
     ];
 
     const shapes = [
@@ -173,6 +173,11 @@
       // Play pop sound
       soundManager.playPop();
 
+      // Speak color name
+      if (color.polish) {
+        speechManager.speak(color.polish);
+      }
+
       // Vibrate
       Utils.vibrate(30);
 
@@ -186,6 +191,9 @@
       // Show celebration every 5 pops
       if (score % 5 === 0) {
         Utils.showCelebration();
+      } else if (score % 10 === 0) {
+        // Extra special milestone
+        speechManager.speakNumber(score);
       }
 
       // Remove balloon
@@ -208,6 +216,11 @@
 
     // Start the game
     function initGame() {
+      // Welcome message
+      setTimeout(() => {
+        speechManager.speakWelcome('Pukaj w baloniki!');
+      }, 500);
+
       // Initial balloons
       for (let i = 0; i < 3; i++) {
         setTimeout(() => createBalloon(), i * 500);

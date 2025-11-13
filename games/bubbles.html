@@ -329,6 +329,14 @@
 
       updateScore();
 
+      // Progress announcements
+      const progress = poppedCount / totalBubbles;
+      if (progress === 0.5) {
+        speechManager.speak('Połowa!');
+      } else if (poppedCount === totalBubbles - 1) {
+        speechManager.speak('Ostatni!');
+      }
+
       // Check if all popped
       if (poppedCount === totalBubbles) {
         setTimeout(() => {
@@ -360,7 +368,13 @@
         gradient: '🎨 Gradient',
         random: '🎲 Losowo'
       };
+      const patternNamesSpoken = {
+        rainbow: 'Tęcza',
+        gradient: 'Gradient',
+        random: 'Losowe kolory'
+      };
       Utils.showCelebration(patternNames[currentPattern]);
+      speechManager.speak(patternNamesSpoken[currentPattern]);
     });
 
     // New grid button

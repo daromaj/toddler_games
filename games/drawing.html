@@ -215,6 +215,12 @@
         rainbowMode = false;
         rainbowBtn.classList.remove('active');
         soundManager.playNote(440, 0.1);
+
+        // Speak color name
+        const colorName = btn.getAttribute('title');
+        if (colorName) {
+          speechManager.speak(colorName);
+        }
       });
     });
 
@@ -225,6 +231,13 @@
         btn.classList.add('active');
         currentSize = parseInt(btn.dataset.size);
         soundManager.playNote(523, 0.1);
+
+        // Speak size (small, medium, large)
+        const sizeNames = { '10': 'Mały', '20': 'Średni', '40': 'Duży' };
+        const sizeName = sizeNames[btn.dataset.size];
+        if (sizeName) {
+          speechManager.speak(sizeName);
+        }
       });
     });
 
@@ -235,9 +248,11 @@
         rainbowBtn.classList.add('active', 'rainbow-mode');
         colorBtns.forEach(b => b.classList.remove('active'));
         soundManager.playCelebration();
+        speechManager.speak('Tęczowe kolory!');
       } else {
         rainbowBtn.classList.remove('active', 'rainbow-mode');
         soundManager.playPop();
+        speechManager.speak('Tryb normalny');
       }
     });
 
