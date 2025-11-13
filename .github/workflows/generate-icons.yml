@@ -1,0 +1,48 @@
+name: Generate Icons
+
+on:
+  push:
+    paths:
+      - 'create_icons.py'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  generate-icons:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Required to commit changes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate icons
+        run: python create_icons.py
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet icon-192.png icon-512.png; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes to icon files"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Icon files were modified"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add icon-192.png icon-512.png
+          git commit -m "chore: auto-generate icons from create_icons.py"
+          git push
