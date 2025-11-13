@@ -58,6 +58,99 @@ const POLISH_TEXT = {
   feedAnimal: 'Nakarm zwierzątko'
 };
 
+// Speech Synthesis Manager for Polish language
+class SpeechManager {
+  constructor() {
+    this.synthesis = window.speechSynthesis;
+    this.enabled = true;
+    this.voice = null;
+    this.rate = 0.9; // Slightly slower for toddlers
+    this.pitch = 1.1; // Slightly higher pitch for friendly tone
+
+    // Initialize Polish voice
+    this.initVoice();
+
+    // Load speech state from localStorage
+    const savedState = localStorage.getItem('speechEnabled');
+    if (savedState !== null) {
+      this.enabled = savedState === 'true';
+    }
+  }
+
+  initVoice() {
+    // Wait for voices to be loaded
+    if (this.synthesis) {
+      const setVoice = () => {
+        const voices = this.synthesis.getVoices();
+        // Try to find a Polish voice
+        this.voice = voices.find(voice => voice.lang.startsWith('pl')) || voices[0];
+        console.log('Speech synthesis voice:', this.voice ? this.voice.name : 'default');
+      };
+
+      // Voices might not be loaded yet
+      if (this.synthesis.getVoices().length > 0) {
+        setVoice();
+      } else {
+        this.synthesis.addEventListener('voiceschanged', setVoice);
+      }
+    }
+  }
+
+  speak(text, options = {}) {
+    if (!this.enabled || !this.synthesis || !text) return;
+
+    // Cancel any ongoing speech
+    this.synthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pl-PL'; // Polish language
+    utterance.rate = options.rate || this.rate;
+    utterance.pitch = options.pitch || this.pitch;
+    utterance.volume = options.volume || 0.8;
+
+    if (this.voice) {
+      utterance.voice = this.voice;
+    }
+
+    this.synthesis.speak(utterance);
+  }
+
+  toggle() {
+    this.enabled = !this.enabled;
+    localStorage.setItem('speechEnabled', this.enabled);
+    if (!this.enabled) {
+      this.synthesis.cancel(); // Stop any ongoing speech
+    }
+    return this.enabled;
+  }
+
+  isEnabled() {
+    return this.enabled;
+  }
+
+  // Speak a color name
+  speakColor(colorName) {
+    const colorText = POLISH_TEXT.colors[colorName] || colorName;
+    this.speak(colorText);
+  }
+
+  // Speak a celebration
+  speakCelebration(text = null) {
+    const celebrationText = text || Utils.getCelebration();
+    this.speak(celebrationText, { pitch: 1.3, rate: 1.0 });
+  }
+
+  // Speak a number
+  speakNumber(number) {
+    this.speak(number.toString());
+  }
+
+  // Speak welcome message
+  speakWelcome(message) {
+    this.speak(message, { rate: 0.85 });
+  }
+}
+
 // Sound management
 class SoundManager {
   constructor() {
@@ -193,7 +286,8 @@ class SoundManager {
   }
 }
 
-// Create global sound manager instance
+// Create global manager instances
+const speechManager = new SpeechManager();
 const soundManager = new SoundManager();
 
 // Utility functions
@@ -210,12 +304,14 @@ const Utils = {
 
   // Show celebration message
   showCelebration(text = null) {
+    const celebrationText = text || Utils.getCelebration();
     const msg = document.createElement('div');
     msg.className = 'celebration-msg';
-    msg.textContent = text || Utils.getCelebration();
+    msg.textContent = celebrationText;
     document.body.appendChild(msg);
 
     soundManager.playCelebration();
+    speechManager.speakCelebration(celebrationText);
 
     setTimeout(() => {
       msg.remove();
@@ -302,5 +398,6 @@ if (document.readyState === 'loading') {
 
 // Export for use in games
 window.POLISH_TEXT = POLISH_TEXT;
+window.speechManager = speechManager;
 window.soundManager = soundManager;
 window.Utils = Utils;

@@ -217,12 +217,34 @@
 
   <script src="shared/common.js"></script>
   <script>
-    // Add click sound to all game cards
+    // Game names for speech
+    const gameNames = {
+      'balloons.html': 'Baloniki',
+      'drawing.html': 'Rysowanie',
+      'bubbles.html': 'Bąbelki'
+    };
+
+    // Add click sound and speech to all game cards
     document.querySelectorAll('.game-card:not(.coming-soon)').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
         soundManager.playSuccess();
+
+        // Speak game name
+        const href = card.getAttribute('href');
+        if (href) {
+          const gameName = href.split('/').pop();
+          const polishName = gameNames[gameName];
+          if (polishName) {
+            speechManager.speak(polishName);
+          }
+        }
       });
     });
+
+    // Welcome message
+    setTimeout(() => {
+      speechManager.speakWelcome('Witaj! Wybierz grę!');
+    }, 1000);
 
     // Prevent navigation on portrait mode
     if (window.matchMedia("(orientation: portrait)").matches) {
