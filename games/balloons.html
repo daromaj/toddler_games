@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Baloniki - Toddler Games</title>
+  <link rel="stylesheet" href="../shared/common.css">
+  <style>
+    .game-area {
+      background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+    }
+
+    .balloon {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+      will-change: transform;
+    }
+
+    .balloon:hover {
+      transform: scale(1.1);
+    }
+
+    .balloon:active {
+      transform: scale(0.9);
+    }
+
+    .balloon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .score-display {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px 30px;
+      border-radius: 20px;
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(0) rotate(0deg);
+      }
+      to {
+        transform: translateY(-100vh) rotate(var(--rotation));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h2 style="font-size: 32px; color: #333;">🎈 Baloniki</h2>
+    <button class="sound-toggle">🔊 Dźwięk</button>
+  </div>
+
+  <div class="game-area" id="gameArea">
+    <div class="score-display">🎈 <span id="score">0</span></div>
+  </div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Balloon game logic
+    const gameArea = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('score');
+    let score = 0;
+    let balloonCount = 0;
+    let gameActive = true;
+
+    const colors = [
+      { name: 'red', color: '#FF6B6B', emoji: '🔴' },
+      { name: 'blue', color: '#4ECDC4', emoji: '🔵' },
+      { name: 'yellow', color: '#FFE66D', emoji: '🟡' },
+      { name: 'green', color: '#95E1D3', emoji: '🟢' },
+      { name: 'purple', color: '#C77DFF', emoji: '🟣' },
+      { name: 'orange', color: '#FF9B54', emoji: '🟠' },
+      { name: 'pink', color: '#FFB6D9', emoji: '🩷' }
+    ];
+
+    const shapes = [
+      { name: 'round', path: 'M50,20 Q30,20 20,40 Q10,60 20,80 Q30,100 50,100 Q70,100 80,80 Q90,60 80,40 Q70,20 50,20' },
+      { name: 'heart', path: 'M50,85 L25,60 Q10,45 10,30 Q10,15 25,10 Q35,5 45,15 L50,20 L55,15 Q65,5 75,10 Q90,15 90,30 Q90,45 75,60 Z' },
+      { name: 'star', path: 'M50,10 L60,40 L90,40 L65,60 L75,90 L50,70 L25,90 L35,60 L10,40 L40,40 Z' },
+      { name: 'oval', path: 'M50,15 Q70,15 85,50 Q70,85 50,85 Q30,85 15,50 Q30,15 50,15' }
+    ];
+
+    function createBalloon() {
+      if (!gameActive) return;
+
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+      balloon.id = 'balloon-' + balloonCount++;
+
+      const color = Utils.randomItem(colors);
+      const shape = Utils.randomItem(shapes);
+      const size = Utils.randomInt(80, 140);
+
+      balloon.style.width = size + 'px';
+      balloon.style.height = size + 'px';
+      balloon.style.left = Utils.randomInt(50, window.innerWidth - 150) + 'px';
+      balloon.style.bottom = '-150px';
+
+      const rotation = Utils.randomInt(-30, 30);
+      balloon.style.setProperty('--rotation', rotation + 'deg');
+
+      const duration = Utils.random(4, 8);
+      balloon.style.animation = `float ${duration}s linear forwards`;
+
+      // Create SVG balloon
+      balloon.innerHTML = `
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="${shape.path}" fill="${color.color}" stroke="#333" stroke-width="2"/>
+          <line x1="50" y1="90" x2="50" y2="120" stroke="#333" stroke-width="2"/>
+        </svg>
+      `;
+
+      // Add click handler
+      balloon.addEventListener('click', () => popBalloon(balloon, color));
+      balloon.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        popBalloon(balloon, color);
+      });
+
+      gameArea.appendChild(balloon);
+
+      // Remove balloon after animation completes
+      setTimeout(() => {
+        if (balloon.parentNode) {
+          balloon.remove();
+        }
+      }, duration * 1000);
+    }
+
+    function popBalloon(balloon, color) {
+      if (!balloon.parentNode) return;
+
+      const rect = balloon.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+
+      // Create particles
+      Utils.createParticles(x, y, color.color, 12);
+
+      // Play pop sound
+      soundManager.playPop();
+
+      // Vibrate
+      Utils.vibrate(30);
+
+      // Add pop animation
+      balloon.classList.add('pop-animation');
+
+      // Update score
+      score++;
+      scoreDisplay.textContent = score;
+
+      // Show celebration every 5 pops
+      if (score % 5 === 0) {
+        Utils.showCelebration();
+      }
+
+      // Remove balloon
+      setTimeout(() => {
+        if (balloon.parentNode) {
+          balloon.remove();
+        }
+      }, 300);
+    }
+
+    // Spawn balloons at random intervals
+    function startSpawning() {
+      if (!gameActive) return;
+
+      createBalloon();
+
+      const nextSpawn = Utils.random(1000, 2500);
+      setTimeout(startSpawning, nextSpawn);
+    }
+
+    // Start the game
+    function initGame() {
+      // Initial balloons
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => createBalloon(), i * 500);
+      }
+
+      // Start continuous spawning
+      setTimeout(startSpawning, 2000);
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      gameActive = false;
+    });
+
+    // Start game when loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGame);
+    } else {
+      initGame();
+    }
+  </script>
+</body>
+</html>

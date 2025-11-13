@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Rysowanie - Toddler Games</title>
+  <link rel="stylesheet" href="../shared/common.css">
+  <style>
+    .game-area {
+      background: white;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .toolbar {
+      width: 150px;
+      background: rgba(255, 255, 255, 0.95);
+      border-right: 3px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      padding: var(--spacing-md);
+      gap: var(--spacing-md);
+      align-items: center;
+      overflow-y: auto;
+    }
+
+    .toolbar-section {
+      width: 100%;
+    }
+
+    .toolbar-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .color-btn {
+      width: 70px;
+      height: 70px;
+      border: 4px solid transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all var(--transition-fast) ease;
+      margin: 5px auto;
+      display: block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .color-btn.active {
+      border-color: #333;
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .size-btn {
+      width: 100%;
+      height: 50px;
+      margin: 5px 0;
+      border: 3px solid #ddd;
+      border-radius: 15px;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast) ease;
+      font-weight: bold;
+    }
+
+    .size-btn:hover {
+      transform: scale(1.05);
+      border-color: var(--btn-bg);
+    }
+
+    .size-btn.active {
+      background: var(--btn-bg);
+      color: white;
+      border-color: var(--btn-bg);
+    }
+
+    .size-indicator {
+      width: 100%;
+      height: 30px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .action-btn {
+      width: 100%;
+      height: 60px;
+      font-size: 20px;
+      margin: 5px 0;
+    }
+
+    .canvas-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #drawingCanvas {
+      display: block;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .rainbow-mode {
+      animation: rainbow 3s linear infinite;
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) {
+      .toolbar {
+        width: 120px;
+      }
+      .color-btn {
+        width: 50px;
+        height: 50px;
+      }
+      .size-btn {
+        height: 40px;
+        font-size: 16px;
+      }
+      .action-btn {
+        height: 50px;
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h2 style="font-size: 32px; color: #333;">🎨 Rysowanie</h2>
+    <button class="sound-toggle">🔊 Dźwięk</button>
+  </div>
+
+  <div class="game-area">
+    <div class="toolbar">
+      <div class="toolbar-section">
+        <div class="toolbar-title">Kolory</div>
+        <button class="color-btn active" data-color="#FF6B6B" style="background: #FF6B6B;" title="Czerwony"></button>
+        <button class="color-btn" data-color="#4ECDC4" style="background: #4ECDC4;" title="Niebieski"></button>
+        <button class="color-btn" data-color="#FFE66D" style="background: #FFE66D;" title="Żółty"></button>
+        <button class="color-btn" data-color="#95E1D3" style="background: #95E1D3;" title="Zielony"></button>
+        <button class="color-btn" data-color="#C77DFF" style="background: #C77DFF;" title="Fioletowy"></button>
+        <button class="color-btn" data-color="#FF9B54" style="background: #FF9B54;" title="Pomarańczowy"></button>
+      </div>
+
+      <div class="toolbar-section">
+        <div class="toolbar-title">Rozmiar</div>
+        <button class="size-btn active" data-size="10">
+          <div class="size-indicator" style="width: 10px; height: 10px;"></div>
+        </button>
+        <button class="size-btn" data-size="20">
+          <div class="size-indicator" style="width: 20px; height: 20px;"></div>
+        </button>
+        <button class="size-btn" data-size="40">
+          <div class="size-indicator" style="width: 40px; height: 40px;"></div>
+        </button>
+      </div>
+
+      <div class="toolbar-section">
+        <button class="action-btn btn" id="rainbowBtn">🌈 Tęcza</button>
+        <button class="action-btn btn" id="clearBtn">🗑️ Wyczyść</button>
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="drawingCanvas"></canvas>
+    </div>
+  </div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Drawing game logic
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorBtns = document.querySelectorAll('.color-btn');
+    const sizeBtns = document.querySelectorAll('.size-btn');
+    const rainbowBtn = document.getElementById('rainbowBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    let drawing = false;
+    let currentColor = '#FF6B6B';
+    let currentSize = 10;
+    let rainbowMode = false;
+    let hue = 0;
+
+    // Setup canvas size
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Color selection
+    colorBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        colorBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentColor = btn.dataset.color;
+        rainbowMode = false;
+        rainbowBtn.classList.remove('active');
+        soundManager.playNote(440, 0.1);
+      });
+    });
+
+    // Size selection
+    sizeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sizeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSize = parseInt(btn.dataset.size);
+        soundManager.playNote(523, 0.1);
+      });
+    });
+
+    // Rainbow mode toggle
+    rainbowBtn.addEventListener('click', () => {
+      rainbowMode = !rainbowMode;
+      if (rainbowMode) {
+        rainbowBtn.classList.add('active', 'rainbow-mode');
+        colorBtns.forEach(b => b.classList.remove('active'));
+        soundManager.playCelebration();
+      } else {
+        rainbowBtn.classList.remove('active', 'rainbow-mode');
+        soundManager.playPop();
+      }
+    });
+
+    // Clear button with confirmation
+    clearBtn.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      soundManager.playWhoosh();
+      Utils.showCelebration('Czysto! ✨');
+    });
+
+    // Drawing functions
+    function startDrawing(e) {
+      drawing = true;
+      draw(e);
+    }
+
+    function stopDrawing() {
+      drawing = false;
+      ctx.beginPath();
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+
+      e.preventDefault();
+
+      let x, y;
+      if (e.type.includes('touch')) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        x = touch.clientX - rect.left;
+        y = touch.clientY - rect.top;
+      } else {
+        x = e.offsetX;
+        y = e.offsetY;
+      }
+
+      // Update rainbow color
+      if (rainbowMode) {
+        hue = (hue + 2) % 360;
+        currentColor = `hsl(${hue}, 100%, 60%)`;
+      }
+
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = currentSize;
+
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+
+    // Mouse events
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // Touch events
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchcancel', stopDrawing);
+
+    // Welcome message
+    setTimeout(() => {
+      Utils.showCelebration('Zacznij rysować! 🎨');
+    }, 500);
+  </script>
+</body>
+</html>
