@@ -2,12 +2,8 @@ name: Generate Icons
 
 on:
   push:
-    branches:
-      - main
     paths:
       - 'create_icons.py'
-      - 'icon.svg'
-      - '.github/workflows/generate-icons.yml'
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
