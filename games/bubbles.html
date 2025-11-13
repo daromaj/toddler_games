@@ -145,12 +145,65 @@
 
     @media (max-width: 1024px) and (orientation: landscape) {
       .bubbles-container {
-        gap: 10px;
-        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 8px;
+        padding: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
       }
       .bubble {
-        min-width: 50px;
-        max-width: 80px;
+        min-width: 45px;
+        max-width: 75px;
+      }
+      .score-panel {
+        top: 60px;
+        right: 10px;
+        padding: 12px;
+        min-width: 120px;
+      }
+      .score-label {
+        font-size: 16px;
+      }
+      .score-value {
+        font-size: 32px;
+      }
+      .pattern-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        margin: 6px 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .bubbles-container {
+        gap: 6px;
+        padding: 8px;
+        max-width: 98%;
+        max-height: 92%;
+      }
+      .bubble {
+        min-width: 40px;
+        max-width: 60px;
+      }
+      .score-panel {
+        top: 55px;
+        right: 8px;
+        padding: 10px;
+        min-width: 100px;
+      }
+      .score-label {
+        font-size: 14px;
+        margin-bottom: 3px;
+      }
+      .score-value {
+        font-size: 28px;
+      }
+      .pattern-btn {
+        padding: 6px 10px;
+        font-size: 13px;
+        margin: 5px 0;
+      }
+      .progress-bar {
+        height: 15px;
+        margin-top: 8px;
       }
     }
   </style>
@@ -203,7 +256,15 @@
 
       // Adjust grid for screen size
       const width = window.innerWidth;
-      if (width < 1024) {
+      const height = window.innerHeight;
+
+      if (width <= 768) {
+        // Small mobile screens
+        cols = 5;
+        rows = 3;
+        totalBubbles = rows * cols;
+      } else if (width < 1024) {
+        // Tablet/larger mobile screens
         cols = 6;
         rows = 4;
         totalBubbles = rows * cols;
