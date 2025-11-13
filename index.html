@@ -6,6 +6,12 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#667eea">
+  <meta name="description" content="Kolorowe gry edukacyjne dla maluchów - Baloniki, Rysowanie, Bąbelki i więcej!">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <title>Gry dla Maluchów - Toddler Games</title>
   <link rel="stylesheet" href="shared/common.css">
   <style>
@@ -16,47 +22,47 @@
     }
 
     .menu-container {
-      max-width: 1200px;
-      width: 90%;
-      padding: var(--spacing-lg);
+      max-width: 1000px;
+      width: 95%;
+      padding: var(--spacing-md);
       background: rgba(255, 255, 255, 0.95);
-      border-radius: 30px;
+      border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
 
     .menu-title {
-      font-size: 48px;
+      font-size: 32px;
       font-weight: bold;
       color: #333;
-      margin-bottom: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .menu-subtitle {
-      font-size: 28px;
+      font-size: 18px;
       color: #666;
-      margin-bottom: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
     }
 
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-lg);
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
     }
 
     .game-card {
       background: white;
-      border-radius: 20px;
-      padding: var(--spacing-lg);
+      border-radius: 15px;
+      padding: var(--spacing-md);
       text-decoration: none;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--spacing-md);
-      min-height: 200px;
-      border: 4px solid transparent;
+      gap: 8px;
+      min-height: 140px;
+      border: 3px solid transparent;
       transition: all var(--transition-medium) ease;
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -73,7 +79,7 @@
     }
 
     .game-icon {
-      font-size: 80px;
+      font-size: 48px;
       line-height: 1;
       animation: bounce 2s ease-in-out infinite;
     }
@@ -90,15 +96,16 @@
     }
 
     .game-title {
-      font-size: 32px;
+      font-size: 20px;
       font-weight: bold;
       color: #333;
     }
 
     .game-description {
-      font-size: 18px;
+      font-size: 14px;
       color: #666;
       text-align: center;
+      line-height: 1.3;
     }
 
     .controls {
@@ -121,22 +128,42 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: rgba(255, 255, 255, 0.9);
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 20px;
+      padding: 5px 15px;
+      border-radius: 8px;
+      font-size: 14px;
       font-weight: bold;
       color: #666;
       border: 2px solid #999;
     }
 
-    @media (max-width: 1024px) and (orientation: landscape) {
-      .menu-title { font-size: 36px; }
-      .menu-subtitle { font-size: 22px; }
-      .games-grid { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); }
-      .game-card { min-height: 150px; padding: var(--spacing-md); }
-      .game-icon { font-size: 60px; }
+    /* Responsive breakpoints */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .menu-container { padding: var(--spacing-sm); }
+      .menu-title { font-size: 24px; margin-bottom: 8px; }
+      .menu-subtitle { font-size: 14px; margin-bottom: 12px; }
+      .games-grid { gap: 12px; }
+      .game-card { min-height: 110px; padding: 12px; gap: 6px; }
+      .game-icon { font-size: 36px; }
+      .game-title { font-size: 16px; }
+      .game-description { font-size: 12px; }
+      .coming-soon::after { font-size: 11px; padding: 4px 10px; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+      .menu-title { font-size: 28px; }
+      .menu-subtitle { font-size: 16px; }
+      .game-card { min-height: 120px; }
+      .game-icon { font-size: 42px; }
+      .game-title { font-size: 18px; }
+    }
+
+    @media (min-width: 1400px) {
+      .menu-title { font-size: 38px; }
+      .menu-subtitle { font-size: 20px; }
+      .game-icon { font-size: 56px; }
       .game-title { font-size: 24px; }
       .game-description { font-size: 16px; }
+      .game-card { min-height: 160px; }
     }
   </style>
 </head>

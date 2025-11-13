@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate PWA Icons</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 10px;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    canvas {
+      border: 2px solid #ccc;
+      margin: 20px 0;
+    }
+    .info {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generate PWA Icons</h1>
+  <p>Click the buttons below to generate and download the required icon files.</p>
+
+  <div class="info">
+    <strong>Instructions:</strong>
+    <ol>
+      <li>Click each button to generate and download the icons</li>
+      <li>Save the downloaded files in the root directory of your project</li>
+      <li>Delete this file (generate-icons.html) after you're done</li>
+    </ol>
+  </div>
+
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <br>
+  <button onclick="generateIcon(192)">Download icon-192.png</button>
+  <button onclick="generateIcon(512)">Download icon-512.png</button>
+
+  <script>
+    function generateIcon(size) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Set canvas size
+      canvas.width = size;
+      canvas.height = size;
+
+      // Create gradient background
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#667eea');
+      gradient.addColorStop(1, '#764ba2');
+
+      // Draw rounded rectangle background
+      const radius = size * 0.2;
+      ctx.fillStyle = gradient;
+      roundRect(ctx, 0, 0, size, size, radius);
+
+      // Draw game elements
+      const scale = size / 512;
+      const centerX = size / 2;
+      const centerY = size / 2;
+
+      // Balloon 1 (red)
+      ctx.fillStyle = '#FF6B6B';
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      ctx.ellipse(centerX - 80 * scale, centerY - 60 * scale, 45 * scale, 55 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Balloon string 1
+      ctx.strokeStyle = '#FF6B6B';
+      ctx.lineWidth = 3 * scale;
+      ctx.beginPath();
+      ctx.moveTo(centerX - 80 * scale, centerY - 5 * scale);
+      ctx.lineTo(centerX - 80 * scale, centerY + 30 * scale);
+      ctx.stroke();
+
+      // Balloon 2 (yellow)
+      ctx.fillStyle = '#FFE66D';
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      ctx.ellipse(centerX + 20 * scale, centerY - 80 * scale, 45 * scale, 55 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Balloon string 2
+      ctx.strokeStyle = '#FFE66D';
+      ctx.lineWidth = 3 * scale;
+      ctx.beginPath();
+      ctx.moveTo(centerX + 20 * scale, centerY - 25 * scale);
+      ctx.lineTo(centerX + 20 * scale, centerY + 10 * scale);
+      ctx.stroke();
+
+      // Balloon 3 (teal)
+      ctx.fillStyle = '#4ECDC4';
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      ctx.ellipse(centerX + 80 * scale, centerY, 45 * scale, 55 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Balloon string 3
+      ctx.strokeStyle = '#4ECDC4';
+      ctx.lineWidth = 3 * scale;
+      ctx.beginPath();
+      ctx.moveTo(centerX + 80 * scale, centerY + 55 * scale);
+      ctx.lineTo(centerX + 80 * scale, centerY + 90 * scale);
+      ctx.stroke();
+
+      // Paint brush (purple)
+      ctx.fillStyle = '#C77DFF';
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      roundRect(ctx, centerX - 50 * scale, centerY + 40 * scale, 30 * scale, 80 * scale, 5 * scale);
+      ctx.globalAlpha = 1;
+
+      // Brush tip (orange)
+      ctx.fillStyle = '#FFA500';
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      ctx.moveTo(centerX - 35 * scale, centerY + 120 * scale);
+      ctx.lineTo(centerX - 50 * scale, centerY + 140 * scale);
+      ctx.lineTo(centerX - 20 * scale, centerY + 140 * scale);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Star (mint green)
+      ctx.fillStyle = '#95E1D3';
+      ctx.globalAlpha = 0.9;
+      drawStar(ctx, centerX + 20 * scale, centerY + 90 * scale, 5, 25 * scale, 12 * scale);
+      ctx.globalAlpha = 1;
+
+      // Add emoji at bottom
+      ctx.font = `${60 * scale}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🎮', centerX, centerY + 170 * scale);
+
+      // Download the image
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `icon-${size}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Generate 512x512 preview on load
+    generateIcon(512);
+  </script>
+</body>
+</html>
