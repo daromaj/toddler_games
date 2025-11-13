@@ -34,21 +34,55 @@ This is a **zero-build, browser-only JavaScript project** designed for toddlers 
 
 ## 📁 File Structure
 
-Keep it simple! Prefer this structure:
+GitHub Pages supports multiple HTML files, so you can organize games as separate files for better maintainability.
+
+### Recommended Structure (Multiple Game Files)
 
 ```
 toddler_games/
-├── index.html          # Main entry point (can contain everything)
-├── styles.css          # (Optional) Separate CSS file
-├── game.js             # (Optional) Separate JavaScript file
-├── assets/             # (Optional) Images, sounds
+├── index.html              # Home page with game menu
+├── styles.css              # Shared global styles (optional)
+├── games/                  # Each game in its own file
+│   ├── balloons.html       # Balloon pop game
+│   ├── drawing.html        # Drawing board game
+│   ├── feeding.html        # Animal feeding game
+│   ├── piano.html          # Musical keyboard game
+│   ├── shapes.html         # Shape sorter game
+│   └── bubbles.html        # Bubble wrap game
+├── shared/                 # Shared resources (optional)
+│   ├── common.js           # Polish text constants, utilities
+│   └── common.css          # Shared animations, colors
+├── assets/                 # (Optional) Images, sounds
 │   ├── sounds/
 │   └── images/
-├── README.md           # Project documentation
-└── claude.md           # This file
+├── README.md               # Project documentation
+└── claude.md               # This file
 ```
 
-**Preferred approach**: Single `index.html` file with inline CSS and JavaScript for maximum simplicity and GitHub Pages compatibility.
+**Benefits of this approach:**
+- ✅ Each game is independent and easier to develop/test
+- ✅ Smaller files load faster
+- ✅ Better code organization
+- ✅ Easy navigation between games (simple links)
+- ✅ Can work on games in parallel
+- ✅ No build step needed - just regular HTML files
+
+### Alternative: Fully Self-Contained Games
+
+Each game file can be completely self-contained (no shared resources):
+
+```
+toddler_games/
+├── index.html              # Home/menu (inline CSS/JS)
+├── balloon-pop.html        # Complete game (inline CSS/JS)
+├── drawing.html            # Complete game (inline CSS/JS)
+├── feeding.html            # Complete game (inline CSS/JS)
+├── piano.html              # Complete game (inline CSS/JS)
+├── shapes.html             # Complete game (inline CSS/JS)
+└── bubbles.html            # Complete game (inline CSS/JS)
+```
+
+This duplicates Polish constants and utilities in each file, but makes each game truly independent.
 
 ## 🎨 Coding Standards
 
@@ -599,12 +633,292 @@ Test that they render correctly in all fonts and contexts.
 
 ## 🔧 Common Tasks
 
-### Adding a New Game
+### Creating a New Game File
 
-1. Create game object following the pattern above
-2. Add game icon/button to menu
-3. Wire up game loading in GameEngine
-4. Test on mobile device
+With the multiple-file approach, each game is a separate HTML file:
+
+**Step 1: Create the game HTML file** (e.g., `games/balloons.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Baloniki - Gry dla Maluchów</title>
+    <link rel="stylesheet" href="../shared/common.css">
+    <style>
+        /* Game-specific styles */
+        .balloon {
+            position: absolute;
+            cursor: pointer;
+            font-size: 60px;
+            transition: transform 0.2s;
+        }
+        .balloon:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="game-header">
+        <a href="../index.html" class="home-btn">🏠 Dom</a>
+        <h1>🎈 Baloniki</h1>
+        <button id="sound-toggle" class="sound-btn">🔊</button>
+    </div>
+
+    <!-- Game area -->
+    <div id="game-container" class="game-area">
+        <!-- Balloons will spawn here -->
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../shared/common.js"></script>
+    <script>
+        // Game-specific code
+        const BalloonGame = {
+            balloons: [],
+            isActive: true,
+
+            init() {
+                console.log('Balloon game started');
+                this.spawnBalloon();
+                this.gameLoop();
+            },
+
+            spawnBalloon() {
+                // Balloon spawning logic
+            },
+
+            gameLoop() {
+                if (!this.isActive) return;
+                this.update();
+                requestAnimationFrame(() => this.gameLoop());
+            },
+
+            update() {
+                // Update balloon positions
+            }
+        };
+
+        // Start game when page loads
+        window.addEventListener('load', () => {
+            BalloonGame.init();
+        });
+    </script>
+</body>
+</html>
+```
+
+**Step 2: Add link to menu** (in `index.html`)
+
+```html
+<div class="game-menu">
+    <a href="games/balloons.html" class="game-btn">
+        <span class="game-icon">🎈</span>
+        <span class="game-name">Baloniki</span>
+    </a>
+    <!-- Other games -->
+</div>
+```
+
+**Step 3: Test the game**
+- Open `games/balloons.html` directly in browser
+- Test navigation back to home page
+- Verify on tablet in landscape mode
+
+### Navigation Between Games
+
+Each game should include a header with navigation:
+
+```html
+<div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h1>Game Title</h1>
+    <button id="sound-toggle">🔊 Dźwięk</button>
+</div>
+```
+
+Style the header for landscape layout:
+
+```css
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--bg-secondary);
+}
+
+.home-btn {
+    font-size: 36px;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: white;
+    transition: transform 0.2s;
+}
+
+.home-btn:active {
+    transform: scale(0.95);
+}
+```
+
+### Creating Shared Resources
+
+If using the shared resource approach (Option 3), create `shared/common.js`:
+
+```javascript
+// shared/common.js - Shared utilities and Polish text
+
+// Polish language constants
+const POLISH = {
+    title: "Gry dla Maluchów",
+    home: "Dom",
+    back: "Powrót",
+    sound: "Dźwięk",
+    soundOn: "Włącz dźwięk",
+    soundOff: "Wyłącz dźwięk",
+
+    colors: {
+        red: "Czerwony",
+        blue: "Niebieski",
+        yellow: "Żółty",
+        green: "Zielony",
+        purple: "Fioletowy",
+        orange: "Pomarańczowy"
+    },
+
+    praise: [
+        "Brawo!",
+        "Świetnie!",
+        "Doskonale!",
+        "Super!",
+        "Wspaniale!",
+        "Tak trzymaj!"
+    ],
+
+    rotateDevice: "Obróć tablet poziomo 🔄"
+};
+
+// Sound management
+const SoundManager = {
+    enabled: true,
+
+    toggle() {
+        this.enabled = !this.enabled;
+        localStorage.setItem('soundEnabled', this.enabled);
+        return this.enabled;
+    },
+
+    init() {
+        const saved = localStorage.getItem('soundEnabled');
+        if (saved !== null) {
+            this.enabled = saved === 'true';
+        }
+    },
+
+    play(soundName) {
+        if (!this.enabled) return;
+        // Play sound logic
+    },
+
+    speak(text) {
+        if (!this.enabled || !('speechSynthesis' in window)) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pl-PL';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.2;
+        speechSynthesis.speak(utterance);
+    }
+};
+
+// Utility functions
+function randomChoice(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
+function showPraise() {
+    const praise = randomChoice(POLISH.praise);
+    SoundManager.speak(praise);
+    // Show visual feedback
+}
+
+// Initialize on load
+SoundManager.init();
+```
+
+And `shared/common.css` for shared styles:
+
+```css
+/* shared/common.css - Shared styles and animations */
+
+:root {
+    --primary-color: #FF6B6B;
+    --secondary-color: #4ECDC4;
+    --color-red: #FF6B6B;
+    --color-blue: #4ECDC4;
+    --color-yellow: #FFE66D;
+    --color-green: #95E1D3;
+    --color-purple: #C7A7FF;
+    --color-orange: #FFAA5C;
+
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F7F9FC;
+
+    --touch-min: 60px;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 40px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg-primary);
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Common animations */
+@keyframes pop {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+@keyframes celebrate {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.2) rotate(-10deg); }
+    75% { transform: scale(1.2) rotate(10deg); }
+}
+
+/* Portrait mode warning */
+@media (orientation: portrait) {
+    body::before {
+        content: "Obróć tablet poziomo 🔄";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        background: var(--primary-color);
+        color: white;
+        font-size: 48px;
+        z-index: 10000;
+        text-align: center;
+        padding: 20px;
+    }
+}
+```
 
 ### Adding Sound Effects
 

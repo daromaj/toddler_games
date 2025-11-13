@@ -161,47 +161,103 @@ A collection of simple, engaging browser-based games designed for toddlers (ages
 
 ## 🏗️ Architecture Overview
 
-### Single Page Structure
-```
-index.html
-├── <style> (inline CSS) or <link> to styles.css
-├── Game selection menu (icon-based)
-├── Game container (div for active game)
-├── <script> (inline JS) or <script src="game.js">
-└── Audio elements (for sound effects)
-```
-
-### JavaScript Module Pattern
-```javascript
-const GameEngine = {
-  currentGame: null,
-  init() { /* Setup */ },
-  loadGame(gameName) { /* Switch games */ },
-  clearGame() { /* Cleanup */ }
-};
-
-const BalloonPop = {
-  init() { /* Game setup */ },
-  start() { /* Start game loop */ },
-  destroy() { /* Cleanup */ }
-};
-// ... other game modules
-```
+GitHub Pages serves static files, so you have flexibility in organizing your code. Choose the approach that works best for your project.
 
 ### File Organization Options
 
-**Option 1: Single File** (Simplest for GitHub Pages)
-- `index.html` - Everything in one file
-
-**Option 2: Separated** (Better organization)
+**Option 1: Single File** (Simplest)
 ```
-index.html      - Main HTML structure
+index.html      - Everything in one file (HTML + CSS + JS)
+```
+- Pros: Dead simple, one file to manage, fastest initial load
+- Cons: Can become large and harder to maintain
+
+**Option 2: Separated Resources** (Better organization)
+```
+index.html      - Main HTML structure with game menu
 styles.css      - All styles
-game.js         - Game engine and all game logic
-sounds/         - Audio files (optional)
-  pop.mp3
-  success.mp3
-  music.mp3
+games.js        - All game logic in one file
+```
+- Pros: Clean separation, easier to edit styles and code
+- Cons: Still one large JS file with all games
+
+**Option 3: Multiple Game Files** (Recommended for this project)
+```
+index.html              - Home/menu page
+styles.css              - Shared styles
+games/
+  ├── balloons.html     - Balloon pop game
+  ├── drawing.html      - Drawing board game
+  ├── feeding.html      - Animal feeding game
+  ├── piano.html        - Musical keyboard game
+  ├── shapes.html       - Shape sorter game
+  └── bubbles.html      - Bubble wrap game
+shared/
+  ├── common.js         - Shared utilities (Polish text, sound functions)
+  └── common.css        - Shared styles (colors, animations)
+```
+- Pros: Each game is independent, easier to develop and test, better code organization
+- Cons: Slightly more navigation between files, need to manage shared resources
+
+**Option 4: Hybrid Approach** (Good balance)
+```
+index.html              - Home/menu page (inline CSS/JS)
+balloon-pop.html        - Self-contained game file
+drawing.html            - Self-contained game file
+feeding.html            - Self-contained game file
+piano.html              - Self-contained game file
+shapes.html             - Self-contained game file
+bubbles.html            - Self-contained game file
+```
+- Pros: Each game is completely standalone, copy Polish text constants into each file
+- Cons: Some code duplication (Polish constants, utility functions)
+
+### Recommended: Option 3 or 4
+
+For this project, **Option 3 (Multiple Game Files)** or **Option 4 (Hybrid)** works best because:
+- Each game can be developed independently
+- Easier to test individual games
+- Smaller files load faster
+- Better organized codebase
+- Each game is a separate URL (e.g., `games/balloons.html`)
+- Easy navigation: each game has a "home" button linking back to `index.html`
+
+### Navigation Pattern
+
+With multiple files, navigation is simple:
+
+```html
+<!-- index.html - Game menu -->
+<div class="game-menu">
+  <a href="games/balloons.html" class="game-btn">🎈 Baloniki</a>
+  <a href="games/drawing.html" class="game-btn">🎨 Rysowanie</a>
+  <a href="games/feeding.html" class="game-btn">🐰 Karmienie</a>
+  <!-- etc -->
+</div>
+
+<!-- games/balloons.html - Game page -->
+<div class="game-header">
+  <a href="../index.html" class="home-btn">🏠 Dom</a>
+  <button class="sound-toggle">🔊 Dźwięk</button>
+</div>
+<div class="game-area">
+  <!-- Balloon pop game content -->
+</div>
+```
+
+### Shared Code Pattern
+
+If using shared resources (Option 3):
+
+```html
+<!-- Each game includes shared resources -->
+<link rel="stylesheet" href="../shared/common.css">
+<link rel="stylesheet" href="../styles.css">
+<script src="../shared/common.js"></script>
+<script>
+  // Game-specific code here
+  const BalloonGame = { /* ... */ };
+</script>
 ```
 
 ## 🎨 Design Guidelines
