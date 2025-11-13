@@ -61,7 +61,7 @@ def create_chunk(chunk_type, data):
 
 def main():
     # Create icon with gradient purple/blue color
-    # Using the theme colors from the app
+    # Using the theme colors from the app (toddler-friendly!)
     color = (102, 126, 234)  # #667eea
 
     # Create 192x192 icon
