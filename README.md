@@ -9,26 +9,30 @@ A collection of simple, engaging browser-based games designed for toddlers (ages
 - **Toddler-Friendly**: Large touch targets, bright colors, simple interactions
 - **One-Page App**: Single HTML file with modular game structure
 - **Offline Capable**: Works without internet connection once loaded
-- **Mobile First**: Optimized for tablets and touch devices
+- **Landscape Optimized**: Designed for tablets/mobile in landscape orientation
+- **Polish Language**: All sounds, instructions, and UI text in Polish
 
 ## ✨ Core Requirements
 
 ### Technical Requirements
 - **No Dependencies**: Zero external libraries or frameworks
 - **Single Page Application**: One HTML file, with inline or linked CSS/JS
-- **Responsive Design**: Works on tablets, phones, and desktop
+- **Landscape Layout**: Optimized for landscape orientation (1024x768, 1280x800, etc.)
 - **Touch-Optimized**: Large buttons (minimum 60px touch targets)
 - **Performant**: Smooth animations using CSS transforms and requestAnimationFrame
 - **Accessible**: High contrast colors, clear visual feedback
 - **Browser Support**: Modern browsers (Chrome, Firefox, Safari, Edge)
+- **Polish Language**: All UI text, instructions, and voice prompts in Polish
 
 ### Design Requirements
 - **Large, Colorful UI**: Bold colors and large elements
 - **Immediate Feedback**: Visual and audio responses to interactions
-- **No Text Menus**: Icon-based navigation
+- **Icon-Based Navigation**: Minimal text, mostly icons (all text in Polish when needed)
 - **Safe Interactions**: No way to "lose" or "fail"
-- **Parent Controls**: Easy way to switch games or reset
+- **Parent Controls**: Easy way to switch games or reset (Polish labels)
 - **No Ads or Links**: Completely safe environment
+- **Landscape First**: UI layout optimized for horizontal screen orientation
+- **Polish Audio**: Voice prompts, celebrations, and instructions in Polish
 
 ## 🎮 Proposed Games
 
@@ -224,6 +228,57 @@ sounds/         - Audio files (optional)
 - **Non-startling** volumes
 - Use Web Audio API or HTML5 Audio elements
 
+### Landscape Layout Guidelines
+- **Aspect Ratio**: Design for 16:10 or 16:9 (typical tablet landscape)
+- **Horizontal Layout**: Games should utilize width effectively
+- **Side Navigation**: Game menu/controls on left or right side
+- **Lock Orientation**: Suggest landscape mode via CSS/meta tags
+- **Safe Zones**: Keep interactive elements away from edges (swipe gestures)
+- **Recommended Resolutions**:
+  - 1024×768 (iPad landscape)
+  - 1280×800 (Android tablets)
+  - 1920×1080 (larger tablets/desktop)
+
+### Polish Language Implementation
+
+**UI Text Examples:**
+- **Menu**: "Gry dla Maluchów" (Games for Toddlers)
+- **Back/Home**: "Powrót" or "🏠 Dom"
+- **Sound toggle**: "Dźwięk" or "🔊/🔇"
+- **Clear/Reset**: "Wyczyść" or "Od nowa"
+- **Good job**: "Brawo!", "Super!", "Wspaniale!"
+
+**Color Names (for drawing/learning):**
+- Czerwony (Red)
+- Niebieski (Blue)
+- Żółty (Yellow)
+- Zielony (Green)
+- Fioletowy (Purple)
+- Pomarańczowy (Orange)
+
+**Animal Names (for feeding game):**
+- Królik (Bunny)
+- Piesek (Puppy)
+- Kotek (Kitten)
+- Miś (Bear)
+- Słoń (Elephant)
+- Małpka (Monkey)
+
+**Shape Names (for shape sorter):**
+- Koło (Circle)
+- Kwadrat (Square)
+- Trójkąt (Triangle)
+- Gwiazdka (Star)
+- Serce (Heart)
+
+**Voice Prompts/Celebrations:**
+- "Świetnie!" (Great!)
+- "Doskonale!" (Excellent!)
+- "Brawo!" (Bravo!)
+- "Spróbuj jeszcze raz" (Try again)
+- "Wybierz kolor" (Choose a color)
+- "Nakarm zwierzątko" (Feed the animal)
+
 ## 🚀 Implementation Phases
 
 ### Phase 1: Foundation
@@ -258,11 +313,13 @@ sounds/         - Audio files (optional)
 
 ## 🧪 Testing Requirements
 
-- **Device Testing**: Test on actual tablets/phones with toddler testers
+- **Device Testing**: Test on actual tablets in landscape mode with toddler testers
+- **Orientation Testing**: Verify layout works perfectly in landscape orientation
 - **Touch Testing**: Ensure all interactive elements are easily tappable
 - **Performance**: Maintain 60fps during animations
-- **Browser Testing**: Chrome, Firefox, Safari, Edge
+- **Browser Testing**: Chrome, Firefox, Safari, Edge (on tablets)
 - **Offline Testing**: Verify works without internet
+- **Language Testing**: Verify all Polish text displays correctly (UTF-8 encoding)
 
 ## 📝 Development Guidelines
 

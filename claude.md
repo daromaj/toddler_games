@@ -6,6 +6,11 @@ This document provides guidelines for AI coding agents working on the Toddler Ga
 
 This is a **zero-build, browser-only JavaScript project** designed for toddlers (ages 2-4). The entire application must run directly from GitHub Pages without any build step, bundlers, or package managers.
 
+**Critical Requirements:**
+- 🇵🇱 **All text, sounds, and instructions must be in POLISH**
+- 📱 **Optimized for LANDSCAPE orientation on tablets/mobile devices**
+- 🎨 **Design for horizontal layout (16:9 or 16:10 aspect ratio)**
+
 ## ⚠️ Critical Constraints
 
 ### MUST NOT Use:
@@ -50,13 +55,21 @@ toddler_games/
 ### HTML
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toddler Games</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Gry dla Maluchów</title>
     <style>
         /* Inline CSS here or link to styles.css */
+        /* Optimize for landscape orientation */
+        @media (orientation: portrait) {
+            body::before {
+                content: "Obróć tablet poziomo 🔄";
+                /* Suggest landscape rotation */
+            }
+        }
     </style>
 </head>
 <body>
@@ -68,13 +81,20 @@ toddler_games/
 </html>
 ```
 
+**Important HTML Notes:**
+- `lang="pl"` - Sets Polish as the document language
+- `user-scalable=no` - Prevents accidental zooming on tablets
+- UTF-8 charset is critical for Polish characters (ą, ć, ę, ł, ń, ó, ś, ź, ż)
+- Title should be in Polish: "Gry dla Maluchów" (Games for Toddlers)
+
 ### CSS Guidelines
 - Use **CSS Grid** and **Flexbox** for layouts
 - Use **CSS Custom Properties** for colors/sizes (easy theming)
 - Use **CSS Transforms** for animations (better performance)
 - Avoid float-based layouts
-- Mobile-first approach with media queries
+- **Landscape-first approach** - design for horizontal orientation
 - Minimum touch target: **60px × 60px**
+- Design for common tablet resolutions: 1024×768, 1280×800, 1920×1080
 
 Example:
 ```css
@@ -85,6 +105,36 @@ Example:
     --border-radius: 15px;
 }
 
+/* Landscape-optimized layout */
+body {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height */
+    overflow: hidden;
+}
+
+/* Horizontal flex layout for landscape */
+.game-container {
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    gap: 20px;
+    height: 100vh;
+}
+
+/* Side navigation for landscape */
+.game-menu {
+    width: 200px; /* Fixed width sidebar */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.game-area {
+    flex: 1; /* Takes remaining width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .game-button {
     min-width: var(--touch-target-min);
     min-height: var(--touch-target-min);
@@ -92,6 +142,21 @@ Example:
     border-radius: var(--border-radius);
     cursor: pointer;
     touch-action: manipulation; /* Prevents double-tap zoom */
+}
+
+/* Portrait warning/hint */
+@media (orientation: portrait) {
+    .rotation-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        background: var(--primary-color);
+        color: white;
+        font-size: 48px;
+        z-index: 9999;
+    }
 }
 ```
 
@@ -310,19 +375,57 @@ const MyGame = {
 }
 ```
 
-### Responsive Design
+### Landscape Layout Design
 ```css
-/* Mobile first */
+/* Landscape-first layout for tablets */
 .game-container {
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    height: 100vh;
     padding: var(--spacing-md);
+    gap: var(--spacing-lg);
 }
 
-/* Tablet and up */
-@media (min-width: 768px) {
+/* Left sidebar for game menu */
+.sidebar {
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+/* Main game area takes remaining space */
+.game-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+}
+
+/* Larger tablets (landscape) */
+@media (min-width: 1024px) and (orientation: landscape) {
+    .sidebar {
+        width: 220px;
+    }
     .game-container {
         padding: var(--spacing-lg);
-        max-width: 1200px;
-        margin: 0 auto;
+    }
+}
+
+/* Warn in portrait mode */
+@media (orientation: portrait) {
+    .portrait-warning {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: #FF6B6B;
+        color: white;
+        font-size: 36px;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
     }
 }
 ```
@@ -349,6 +452,150 @@ const MyGame = {
     animation: pop 0.4s ease-out forwards;
 }
 ```
+
+## 🇵🇱 Polish Language Implementation
+
+**CRITICAL: All user-facing text must be in Polish!**
+
+### Polish Text Constants
+
+Create a translations object in your JavaScript:
+
+```javascript
+const POLISH = {
+    // Main menu
+    title: "Gry dla Maluchów",
+    home: "Dom",
+    back: "Powrót",
+
+    // Controls
+    sound: "Dźwięk",
+    soundOn: "Włącz dźwięk",
+    soundOff: "Wyłącz dźwięk",
+    clear: "Wyczyść",
+    reset: "Od nowa",
+
+    // Colors (Kolory)
+    colors: {
+        red: "Czerwony",
+        blue: "Niebieski",
+        yellow: "Żółty",
+        green: "Zielony",
+        purple: "Fioletowy",
+        orange: "Pomarańczowy"
+    },
+
+    // Shapes (Kształty)
+    shapes: {
+        circle: "Koło",
+        square: "Kwadrat",
+        triangle: "Trójkąt",
+        star: "Gwiazdka",
+        heart: "Serce"
+    },
+
+    // Animals (Zwierzęta)
+    animals: {
+        bunny: "Królik",
+        puppy: "Piesek",
+        kitten: "Kotek",
+        bear: "Miś",
+        elephant: "Słoń",
+        monkey: "Małpka"
+    },
+
+    // Encouragement (Zachęta)
+    praise: [
+        "Brawo!",
+        "Świetnie!",
+        "Doskonale!",
+        "Super!",
+        "Wspaniale!",
+        "Tak trzymaj!"
+    ],
+
+    // Instructions (Instrukcje)
+    instructions: {
+        tap: "Dotknij",
+        draw: "Rysuj",
+        feed: "Nakarm zwierzątko",
+        choose: "Wybierz",
+        tryAgain: "Spróbuj jeszcze raz"
+    },
+
+    // Game names
+    games: {
+        balloonPop: "Baloniki",
+        drawing: "Rysowanie",
+        feeding: "Karmienie",
+        piano: "Pianino",
+        shapes: "Kształty",
+        bubbles: "Bąbelki"
+    },
+
+    // Orientation hint
+    rotateDevice: "Obróć tablet poziomo 🔄"
+};
+
+// Usage example
+function showPraise() {
+    const randomPraise = POLISH.praise[Math.floor(Math.random() * POLISH.praise.length)];
+    displayMessage(randomPraise);
+}
+```
+
+### Voice/Audio Guidelines
+
+When adding voice prompts or text-to-speech:
+
+```javascript
+// Use Web Speech API for Polish voice
+function speak(text) {
+    if ('speechSynthesis' in window && GameEngine.soundEnabled) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'pl-PL'; // Polish language
+        utterance.rate = 0.9; // Slightly slower for toddlers
+        utterance.pitch = 1.2; // Slightly higher pitch (friendly)
+        speechSynthesis.speak(utterance);
+    }
+}
+
+// Example usage
+speak(POLISH.praise[0]); // "Brawo!"
+speak(POLISH.instructions.feed); // "Nakarm zwierzątko"
+```
+
+### HTML with Polish Text
+
+Always use Polish in HTML:
+
+```html
+<button class="game-btn" data-game="balloonPop">
+    🎈 Baloniki
+</button>
+
+<div class="controls">
+    <button id="sound-toggle">🔊 Dźwięk</button>
+    <button id="home-btn">🏠 Dom</button>
+</div>
+
+<div class="color-picker">
+    <button data-color="red" style="background: var(--color-red)">
+        Czerwony
+    </button>
+    <button data-color="blue" style="background: var(--color-blue)">
+        Niebieski
+    </button>
+</div>
+```
+
+### Important Polish Characters
+
+Ensure UTF-8 encoding supports these Polish characters:
+- **ą, ć, ę, ł, ń, ó, ś, ź, ż**
+- **Ą, Ć, Ę, Ł, Ń, Ó, Ś, Ź, Ż**
+
+Test that they render correctly in all fonts and contexts.
 
 ## 🔧 Common Tasks
 
@@ -459,19 +706,59 @@ class Particle {
 
 When implementing features, verify:
 
+- [ ] Works on tablets in **landscape mode** (primary use case)
+- [ ] Portrait mode shows rotation hint
 - [ ] Works on mobile (touch events)
 - [ ] Works on desktop (mouse events)
 - [ ] No console errors
 - [ ] Smooth 60fps animation
 - [ ] Touch targets are 60px+ minimum
+- [ ] **All text is in Polish** (no English text visible)
+- [ ] Polish characters display correctly (ą, ć, ę, ł, ń, ó, ś, ź, ż)
+- [ ] UTF-8 encoding is set (`<meta charset="UTF-8">`)
+- [ ] `lang="pl"` is set on `<html>` tag
 - [ ] Loads without internet (after first load)
 - [ ] Works in GitHub Pages environment
 - [ ] No build step required
 - [ ] All assets are self-contained or in repo
+- [ ] Layout optimized for 1024×768 and 1280×800 (common tablet resolutions)
 
 ## 🚫 Common Pitfalls to Avoid
 
-1. **Don't use import/export** - Not supported without build tools
+1. **Don't use English text** - ALL text must be in Polish
+   ```javascript
+   // ❌ Don't do this
+   button.textContent = "Start Game";
+
+   // ✅ Do this instead
+   button.textContent = "Rozpocznij grę";
+   ```
+
+2. **Don't forget `lang="pl"`** - HTML document must specify Polish language
+   ```html
+   <!-- ❌ Wrong -->
+   <html lang="en">
+
+   <!-- ✅ Correct -->
+   <html lang="pl">
+   ```
+
+3. **Don't design for portrait** - Optimize for landscape orientation
+   ```css
+   /* ❌ Avoid vertical layouts */
+   .container {
+       flex-direction: column;
+       height: 100vh;
+   }
+
+   /* ✅ Use horizontal layouts */
+   .container {
+       flex-direction: row;
+       width: 100vw;
+   }
+   ```
+
+4. **Don't use import/export** - Not supported without build tools
    ```javascript
    // ❌ Don't do this
    import { Game } from './game.js';
@@ -480,25 +767,25 @@ When implementing features, verify:
    const Game = window.Game || {};
    ```
 
-2. **Don't rely on npm packages** - Everything must be self-contained
+5. **Don't rely on npm packages** - Everything must be self-contained
 
-3. **Don't use template literals in HTML** - Use DOM manipulation or innerHTML
+6. **Don't use template literals in HTML** - Use DOM manipulation or innerHTML
 
-4. **Don't forget mobile testing** - Desktop testing isn't enough
+7. **Don't forget tablet landscape testing** - Test on 1024×768 and 1280×800
 
-5. **Don't use small touch targets** - Minimum 60px
+8. **Don't use small touch targets** - Minimum 60px × 60px
 
-6. **Don't forget to clean up** - Remove event listeners, cancel animations in destroy()
+9. **Don't forget to clean up** - Remove event listeners, cancel animations in destroy()
 
-7. **Don't use relative paths incorrectly** - GitHub Pages serves from a subdirectory
-   ```html
-   <!-- ✅ Good -->
-   <link rel="stylesheet" href="./styles.css">
-   <script src="./game.js"></script>
+10. **Don't use relative paths incorrectly** - GitHub Pages serves from a subdirectory
+    ```html
+    <!-- ✅ Good -->
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./game.js"></script>
 
-   <!-- ❌ Might break on GitHub Pages -->
-   <link rel="stylesheet" href="/styles.css">
-   ```
+    <!-- ❌ Might break on GitHub Pages -->
+    <link rel="stylesheet" href="/styles.css">
+    ```
 
 ## 📝 Code Comments
 
@@ -564,14 +851,19 @@ No build step needed! The files run directly as-is.
 A feature is complete when:
 
 - [ ] Code works in Chrome, Firefox, Safari, Edge
-- [ ] Works on mobile (iOS Safari, Chrome Android)
+- [ ] Works on tablets in **landscape mode** (iOS Safari, Chrome Android)
+- [ ] **All text is in Polish** - no English visible
+- [ ] Polish characters render correctly
+- [ ] `lang="pl"` set on HTML tag
+- [ ] Layout optimized for landscape (horizontal orientation)
+- [ ] Shows rotation hint in portrait mode
 - [ ] No build step required
 - [ ] No console errors or warnings
 - [ ] Smooth performance (60fps)
-- [ ] Touch targets meet minimum size
+- [ ] Touch targets meet minimum size (60px × 60px)
 - [ ] Includes appropriate comments
 - [ ] Cleanup code (destroy method) implemented
-- [ ] Tested with actual device/touch screen
+- [ ] Tested with actual tablet device in landscape orientation
 
 ---
 
@@ -585,6 +877,17 @@ GameEngine.loadGame('BalloonPopGame');
 **Play sound:**
 ```javascript
 playSound('pop');
+```
+
+**Speak in Polish:**
+```javascript
+speak("Brawo!"); // Uses Polish voice (pl-PL)
+```
+
+**Show Polish praise:**
+```javascript
+const randomPraise = POLISH.praise[Math.floor(Math.random() * POLISH.praise.length)];
+displayMessage(randomPraise);
 ```
 
 **Create animation:**
@@ -603,6 +906,23 @@ const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#C7A7FF'];
 const randomColor = colors[Math.floor(Math.random() * colors.length)];
 ```
 
+**Set Polish text:**
+```javascript
+button.textContent = POLISH.games.balloonPop; // "Baloniki"
+title.textContent = POLISH.title; // "Gry dla Maluchów"
+```
+
+**Detect orientation:**
+```javascript
+const isLandscape = window.innerWidth > window.innerHeight;
+if (!isLandscape) {
+    showRotationHint(POLISH.rotateDevice); // "Obróć tablet poziomo 🔄"
+}
+```
+
 ---
 
-**Remember**: Keep it simple, keep it fun, keep it working without any build tools! 🎮
+**Remember**:
+- 🇵🇱 Always use Polish language
+- 📱 Always design for landscape orientation
+- 🎮 Keep it simple, keep it fun, keep it working without any build tools!
