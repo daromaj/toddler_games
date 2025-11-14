@@ -1,0 +1,111 @@
+name: Generate AI Game Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: 'Which category to generate images for'
+        required: true
+        type: choice
+        options:
+          - all
+          - animals
+          - food
+          - shapes
+          - balloons
+          - backgrounds
+        default: 'animals'
+      delay:
+        description: 'Delay between API calls (seconds)'
+        required: false
+        type: number
+        default: 2
+
+jobs:
+  generate-images:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+
+      - name: Generate images
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/generate_images.py \
+            --category ${{ github.event.inputs.category }} \
+            --delay ${{ github.event.inputs.delay }}
+
+      - name: Optimize WebP images
+        run: |
+          # Additional optimization for WebP if needed
+          echo "Images generated and optimized"
+
+          # Show what was generated
+          echo "Generated files:"
+          find images -type f -newer scripts/generate_images.py 2>/dev/null || true
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No new images were generated"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "New images were generated"
+          fi
+
+      - name: Commit and push images
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add images/
+
+          # Create commit message
+          CATEGORY="${{ github.event.inputs.category }}"
+          git commit -m "Add AI-generated images for ${CATEGORY}
+
+          Generated using Gemini 2.0 Flash
+          Category: ${CATEGORY}
+          Workflow run: ${{ github.run_number }}"
+
+          # Push changes
+          git push
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Image Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Category**: ${{ github.event.inputs.category }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Delay**: ${{ github.event.inputs.delay }}s" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -d "images" ]; then
+            echo "### Generated Files" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            find images -type f -name "*.png" -o -name "*.webp" | sort >> $GITHUB_STEP_SUMMARY || true
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi

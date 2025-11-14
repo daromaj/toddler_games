@@ -33,6 +33,13 @@
       transition: transform 0.3s ease;
     }
 
+    .animal img {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    }
+
     .animal.eating {
       animation: eat 0.5s ease-in-out;
     }
@@ -52,6 +59,13 @@
       animation: float-bubble 3s ease-in-out infinite;
       transition: transform 0.2s ease;
       border: 4px solid white;
+    }
+
+    .food-bubble img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      pointer-events: none;
     }
 
     .food-bubble:hover {
@@ -147,12 +161,14 @@
         margin-bottom: 20px;
       }
       .animal { font-size: 120px; }
+      .animal img { width: 120px; height: 120px; }
       .food-bubble {
         width: 70px;
         height: 70px;
         font-size: 40px;
         border: 3px solid white;
       }
+      .food-bubble img { width: 50px; height: 50px; }
       .animal-name {
         top: 10px;
         padding: 8px 16px;
@@ -178,11 +194,13 @@
         margin-bottom: 30px;
       }
       .animal { font-size: 140px; }
+      .animal img { width: 140px; height: 140px; }
       .food-bubble {
         width: 80px;
         height: 80px;
         font-size: 50px;
       }
+      .food-bubble img { width: 60px; height: 60px; }
       .animal-name {
         font-size: 24px;
         padding: 10px 20px;
@@ -197,11 +215,13 @@
         margin-bottom: 50px;
       }
       .animal { font-size: 220px; }
+      .animal img { width: 220px; height: 220px; }
       .food-bubble {
         width: 120px;
         height: 120px;
         font-size: 72px;
       }
+      .food-bubble img { width: 90px; height: 90px; }
       .animal-name { font-size: 38px; }
       .progress-hearts { font-size: 38px; }
     }
@@ -232,15 +252,51 @@
 
   <script src="../shared/common.js"></script>
   <script>
-    // Animal configurations
+    // Food emoji to image mapping
+    const foodImages = {
+      '🥕': 'carrot',
+      '🥬': 'lettuce',
+      '🌾': 'wheat',
+      '🦴': 'bone',
+      '🥩': 'meat',
+      '🍖': 'steak',
+      '🐟': 'fish',
+      '🥛': 'milk',
+      '🐭': 'mouse',
+      '🍯': 'honey',
+      '🍓': 'strawberry',
+      '🍌': 'banana',
+      '🥜': 'peanut',
+      '🌿': 'leaves',
+      '🍑': 'peach',
+      '🥥': 'coconut'
+    };
+
+    // Animal configurations with image paths
     const animals = [
-      { emoji: '🐰', name: 'Królik', foods: ['🥕', '🥬', '🌾'] },
-      { emoji: '🐶', name: 'Piesek', foods: ['🦴', '🥩', '🍖'] },
-      { emoji: '🐱', name: 'Kotek', foods: ['🐟', '🥛', '🐭'] },
-      { emoji: '🐻', name: 'Miś', foods: ['🍯', '🐟', '🍓'] },
-      { emoji: '🐘', name: 'Słoń', foods: ['🍌', '🥜', '🌿'] },
-      { emoji: '🐵', name: 'Małpka', foods: ['🍌', '🍑', '🥥'] }
+      { emoji: '🐰', image: 'rabbit', name: 'Królik', foods: ['🥕', '🥬', '🌾'] },
+      { emoji: '🐶', image: 'dog', name: 'Piesek', foods: ['🦴', '🥩', '🍖'] },
+      { emoji: '🐱', image: 'cat', name: 'Kotek', foods: ['🐟', '🥛', '🐭'] },
+      { emoji: '🐻', image: 'bear', name: 'Miś', foods: ['🍯', '🐟', '🍓'] },
+      { emoji: '🐘', image: 'elephant', name: 'Słoń', foods: ['🍌', '🥜', '🌿'] },
+      { emoji: '🐵', image: 'monkey', name: 'Małpka', foods: ['🍌', '🍑', '🥥'] }
     ];
+
+    // Helper function to create image with emoji fallback
+    function createImageElement(imagePath, emoji, altText) {
+      const img = document.createElement('img');
+      img.src = `../images/${imagePath}.webp`;
+      img.alt = altText;
+      img.onerror = function() {
+        // Try PNG fallback
+        this.onerror = function() {
+          // If both fail, use emoji
+          this.parentElement.innerHTML = emoji;
+        };
+        this.src = `../images/${imagePath}.png`;
+      };
+      return img;
+    }
 
     let currentAnimalIndex = 0;
     let feedCount = 0;
@@ -255,7 +311,13 @@
 
     function showAnimal() {
       const animal = animals[currentAnimalIndex];
-      document.getElementById('animal').textContent = animal.emoji;
+      const animalEl = document.getElementById('animal');
+
+      // Clear and add image
+      animalEl.innerHTML = '';
+      const img = createImageElement(`animals/${animal.image}`, animal.emoji, animal.name);
+      animalEl.appendChild(img);
+
       document.getElementById('animalName').textContent = animal.name;
       feedCount = 0;
       updateProgress();
@@ -283,7 +345,16 @@
       animal.foods.forEach((food, index) => {
         const bubble = document.createElement('div');
         bubble.className = 'food-bubble';
-        bubble.textContent = food;
+
+        // Use image if available, otherwise emoji
+        const foodImageName = foodImages[food];
+        if (foodImageName) {
+          const img = createImageElement(`food/${foodImageName}`, food, foodImageName);
+          bubble.appendChild(img);
+        } else {
+          bubble.textContent = food;
+        }
+
         bubble.style.left = positions[index % positions.length].x + '%';
         bubble.style.top = positions[index % positions.length].y + '%';
         bubble.style.animationDelay = (index * 0.3) + 's';

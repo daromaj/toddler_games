@@ -1,0 +1,197 @@
+{
+  "animals": {
+    "name": "Animals for Feeding Game",
+    "items": [
+      {
+        "name": "Rabbit",
+        "filename": "rabbit",
+        "prompt": "generate a small image of a cute rabbit - sticker like but without borders - on green screen like background - cheerful and friendly looking - toddler-friendly cartoon style with big eyes"
+      },
+      {
+        "name": "Dog",
+        "filename": "dog",
+        "prompt": "generate a small image of a cute friendly dog - sticker like but without borders - on green screen like background - happy puppy with floppy ears - toddler-friendly cartoon style with big eyes"
+      },
+      {
+        "name": "Cat",
+        "filename": "cat",
+        "prompt": "generate a small image of a cute playful cat - sticker like but without borders - on green screen like background - adorable kitten - toddler-friendly cartoon style with big eyes"
+      },
+      {
+        "name": "Bear",
+        "filename": "bear",
+        "prompt": "generate a small image of a cute teddy bear - sticker like but without borders - on green screen like background - friendly and cuddly looking - toddler-friendly cartoon style with big eyes"
+      },
+      {
+        "name": "Elephant",
+        "filename": "elephant",
+        "prompt": "generate a small image of a cute baby elephant - sticker like but without borders - on green screen like background - cheerful with big floppy ears - toddler-friendly cartoon style with big eyes"
+      },
+      {
+        "name": "Monkey",
+        "filename": "monkey",
+        "prompt": "generate a small image of a cute playful monkey - sticker like but without borders - on green screen like background - happy and energetic - toddler-friendly cartoon style with big eyes"
+      }
+    ]
+  },
+  "food": {
+    "name": "Food Items for Feeding Game",
+    "items": [
+      {
+        "name": "Carrot",
+        "filename": "carrot",
+        "prompt": "generate a small image of a bright orange carrot with green top - sticker like but without borders - on green screen like background - vibrant and appetizing - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Lettuce",
+        "filename": "lettuce",
+        "prompt": "generate a small image of fresh green lettuce leaves - sticker like but without borders - on green screen like background - crispy and fresh looking - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Wheat",
+        "filename": "wheat",
+        "prompt": "generate a small image of golden wheat stalks - sticker like but without borders - on green screen like background - bundle of wheat - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Bone",
+        "filename": "bone",
+        "prompt": "generate a small image of a white dog bone - sticker like but without borders - on green screen like background - classic cartoon bone shape - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Meat",
+        "filename": "meat",
+        "prompt": "generate a small image of a juicy steak - sticker like but without borders - on green screen like background - appetizing red meat - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Steak",
+        "filename": "steak",
+        "prompt": "generate a small image of a cooked meat on bone - sticker like but without borders - on green screen like background - drumstick style - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Fish",
+        "filename": "fish",
+        "prompt": "generate a small image of a cute blue fish - sticker like but without borders - on green screen like background - friendly fish with scales - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Milk",
+        "filename": "milk",
+        "prompt": "generate a small image of a glass of white milk - sticker like but without borders - on green screen like background - fresh and creamy - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Mouse",
+        "filename": "mouse",
+        "prompt": "generate a small image of a tiny cute grey mouse - sticker like but without borders - on green screen like background - small and adorable - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Honey",
+        "filename": "honey",
+        "prompt": "generate a small image of a honey pot with golden honey dripping - sticker like but without borders - on green screen like background - sweet and sticky - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Strawberry",
+        "filename": "strawberry",
+        "prompt": "generate a small image of a bright red strawberry with seeds - sticker like but without borders - on green screen like background - juicy and delicious - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Banana",
+        "filename": "banana",
+        "prompt": "generate a small image of a yellow banana - sticker like but without borders - on green screen like background - ripe and fresh - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Peanut",
+        "filename": "peanut",
+        "prompt": "generate a small image of peanuts in shell - sticker like but without borders - on green screen like background - brown peanut shells - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Leaves",
+        "filename": "leaves",
+        "prompt": "generate a small image of fresh green leaves - sticker like but without borders - on green screen like background - lush vegetation - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Peach",
+        "filename": "peach",
+        "prompt": "generate a small image of a fuzzy orange peach - sticker like but without borders - on green screen like background - ripe and juicy - toddler-friendly cartoon style"
+      },
+      {
+        "name": "Coconut",
+        "filename": "coconut",
+        "prompt": "generate a small image of a brown coconut - sticker like but without borders - on green screen like background - tropical coconut with hairy shell - toddler-friendly cartoon style"
+      }
+    ]
+  },
+  "shapes": {
+    "name": "Shapes for Shapes Game",
+    "items": [
+      {
+        "name": "Circle",
+        "filename": "circle",
+        "prompt": "generate a small image of a bright blue perfect circle - sticker like but without borders - on green screen like background - solid color geometric shape - toddler-friendly cartoon style with slight 3D effect"
+      },
+      {
+        "name": "Square",
+        "filename": "square",
+        "prompt": "generate a small image of a bright red perfect square - sticker like but without borders - on green screen like background - solid color geometric shape - toddler-friendly cartoon style with slight 3D effect"
+      },
+      {
+        "name": "Triangle",
+        "filename": "triangle",
+        "prompt": "generate a small image of a bright yellow perfect triangle pointing up - sticker like but without borders - on green screen like background - solid color geometric shape - toddler-friendly cartoon style with slight 3D effect"
+      },
+      {
+        "name": "Star",
+        "filename": "star",
+        "prompt": "generate a small image of a bright orange five-pointed star - sticker like but without borders - on green screen like background - solid color geometric shape - toddler-friendly cartoon style with slight 3D effect"
+      },
+      {
+        "name": "Heart",
+        "filename": "heart",
+        "prompt": "generate a small image of a bright pink heart shape - sticker like but without borders - on green screen like background - solid color geometric shape - toddler-friendly cartoon style with slight 3D effect"
+      },
+      {
+        "name": "Pentagon",
+        "filename": "pentagon",
+        "prompt": "generate a small image of a bright green pentagon - sticker like but without borders - on green screen like background - solid color geometric shape - toddler-friendly cartoon style with slight 3D effect"
+      }
+    ]
+  },
+  "balloons": {
+    "name": "Balloons for Balloon Game",
+    "items": [
+      {
+        "name": "Round Balloon Red",
+        "filename": "balloon-round-red",
+        "prompt": "generate a small image of a bright red round balloon with string - sticker like but without borders - on green screen like background - shiny and inflated - toddler-friendly cartoon style with highlight reflection"
+      },
+      {
+        "name": "Round Balloon Blue",
+        "filename": "balloon-round-blue",
+        "prompt": "generate a small image of a bright blue round balloon with string - sticker like but without borders - on green screen like background - shiny and inflated - toddler-friendly cartoon style with highlight reflection"
+      },
+      {
+        "name": "Heart Balloon Pink",
+        "filename": "balloon-heart-pink",
+        "prompt": "generate a small image of a bright pink heart-shaped balloon with string - sticker like but without borders - on green screen like background - shiny and inflated - toddler-friendly cartoon style with highlight reflection"
+      },
+      {
+        "name": "Star Balloon Yellow",
+        "filename": "balloon-star-yellow",
+        "prompt": "generate a small image of a bright yellow star-shaped balloon with string - sticker like but without borders - on green screen like background - shiny and inflated - toddler-friendly cartoon style with highlight reflection"
+      }
+    ]
+  },
+  "backgrounds": {
+    "name": "Background Images for Games",
+    "items": [
+      {
+        "name": "Feeding Background",
+        "filename": "feeding-bg",
+        "prompt": "generate a wide landscape background image for a toddler feeding game - warm pastoral scene with soft grass and sky - no specific objects just atmosphere - gentle colors - toddler-friendly illustration style"
+      },
+      {
+        "name": "Balloon Sky Background",
+        "filename": "balloons-bg",
+        "prompt": "generate a wide landscape background image of a bright blue sky with fluffy white clouds - for a balloon game - no balloons in the background - just sky and clouds - toddler-friendly illustration style"
+      }
+    ]
+  }
+}
