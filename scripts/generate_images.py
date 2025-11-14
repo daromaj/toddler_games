@@ -34,13 +34,14 @@ def configure_gemini():
     print("✓ Gemini API configured")
 
 
-def generate_image(prompt, model_name="gemini-2.0-flash-preview-image-generation"):
+def generate_image(prompt, model_name="gemini-2.5-flash-image"):
     """
     Generate an image using Gemini API.
 
     Args:
         prompt: Text description of the image to generate
         model_name: Gemini model to use for image generation
+                   (default: gemini-2.5-flash-image - current stable model)
 
     Returns:
         PIL Image object or None on failure
@@ -260,7 +261,7 @@ def main():
 
     print("🎨 AI Image Generator for Toddler Games")
     print("=" * 60)
-    print("Model: gemini-2.0-flash-preview-image-generation")
+    print("Model: gemini-2.5-flash-image")
     print("=" * 60)
 
     # Configure API
