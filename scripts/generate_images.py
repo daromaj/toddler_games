@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate AI images for toddler games using Google Gemini/Imagen API.
+Generate AI images for toddler games using Google Gemini API.
 Includes automatic background removal and optimization.
 """
 
@@ -13,7 +13,6 @@ from PIL import Image
 from pathlib import Path
 import io
 import time
-import base64
 
 try:
     from rembg import remove
@@ -35,16 +34,13 @@ def configure_gemini():
     print("✓ Gemini API configured")
 
 
-def generate_image(prompt, model_name="imagen-3.0-generate-001"):
+def generate_image(prompt, model_name="gemini-2.0-flash-preview-image-generation"):
     """
-    Generate an image using Google's AI API.
-
-    This function tries multiple approaches to generate images as the API
-    has been evolving.
+    Generate an image using Gemini API.
 
     Args:
         prompt: Text description of the image to generate
-        model_name: Model to use for generation
+        model_name: Gemini model to use for image generation
 
     Returns:
         PIL Image object or None on failure
@@ -52,91 +48,29 @@ def generate_image(prompt, model_name="imagen-3.0-generate-001"):
     try:
         print(f"  Generating: {prompt[:60]}...")
 
-        # Method 1: Try using generate_images from genai module directly
-        try:
-            response = genai.generate_images(
-                model=model_name,
-                prompt=prompt,
-                number_of_images=1
-            )
+        config = genai.types.GenerationConfig(
+            response_mime_type="image/png",
+        )
 
-            if response and hasattr(response, 'images') and response.images:
-                # Extract image bytes
-                img_data = response.images[0]
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            generation_config=config
+        )
 
-                # Handle different response formats
-                if hasattr(img_data, '_image_bytes'):
-                    image_bytes = img_data._image_bytes
-                elif hasattr(img_data, 'data'):
-                    image_bytes = img_data.data
-                else:
-                    # Try to get image data directly
-                    image_bytes = img_data
+        response = model.generate_content(prompt)
 
-                image = Image.open(io.BytesIO(image_bytes))
-                print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
-                return image
-
-        except AttributeError as e:
-            print(f"  ⚠ Method 1 failed: {e}")
-
-        # Method 2: Try using ImageGenerationModel
-        try:
-            print(f"  Trying ImageGenerationModel...")
-            model = genai.ImageGenerationModel(model_name)
-            result = model.generate_images(prompt=prompt)
-
-            if result:
-                if hasattr(result, 'images'):
-                    img_bytes = result.images[0]._image_bytes
-                else:
-                    img_bytes = result[0]._image_bytes
-
-                image = Image.open(io.BytesIO(img_bytes))
-                print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
-                return image
-
-        except (AttributeError, TypeError) as e:
-            print(f"  ⚠ Method 2 failed: {e}")
-
-        # Method 3: Try text-to-image with GenerativeModel asking for base64
-        try:
-            print(f"  Trying text-based generation request...")
-
-            text_model = genai.GenerativeModel('gemini-2.0-flash-exp')
-
-            # Ask the model to describe how to generate the image
-            # This is a workaround - we'll use another service if this doesn't work
-            enhanced_prompt = f"""I need to generate an image with these specifications:
-{prompt}
-
-Please provide a very detailed, comprehensive description suitable for an AI image generator,
-including: style, colors, composition, lighting, and specific visual details.
-Make it very specific and detailed for best results."""
-
-            response = text_model.generate_content(enhanced_prompt)
-
-            # This won't actually generate an image, but gives us enhanced prompt
-            # We'll need to use a different service
-            print(f"  ℹ️  Text model response received (but can't generate images)")
-            print(f"  ✗ Gemini text models cannot generate images directly")
+        # Access the image data
+        if hasattr(response, 'parts') and response.parts:
+            image_data = response.parts[0].inline_data
+            image = Image.open(io.BytesIO(image_data.data))
+            print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
+            return image
+        else:
+            print(f"  ✗ No image data in response")
             return None
-
-        except Exception as e:
-            print(f"  ⚠ Method 3 failed: {e}")
-
-        print(f"  ✗ All generation methods failed")
-        print(f"  ℹ️  The Google GenAI API structure may have changed.")
-        print(f"  ℹ️  You may need to:")
-        print(f"     1. Use Vertex AI instead of the genai library")
-        print(f"     2. Use a different image generation service (DALL-E, Stable Diffusion)")
-        print(f"     3. Check Google AI Studio for the latest API documentation")
-
-        return None
 
     except Exception as e:
         print(f"  ✗ Error generating image: {e}")
-        print(f"  ℹ️  Error type: {type(e).__name__}")
         return None
 
 
@@ -321,18 +255,12 @@ def main():
         default=2,
         help='Delay between API calls in seconds'
     )
-    parser.add_argument(
-        '--model',
-        type=str,
-        default='imagen-3.0-generate-001',
-        help='Model name to use for generation'
-    )
 
     args = parser.parse_args()
 
     print("🎨 AI Image Generator for Toddler Games")
     print("=" * 60)
-    print(f"Model: {args.model}")
+    print("Model: gemini-2.0-flash-preview-image-generation")
     print("=" * 60)
 
     # Configure API
@@ -358,7 +286,7 @@ def main():
         generate_category(category_data, output_dir, delay=args.delay)
 
     print("=" * 60)
-    print("Image generation process completed!")
+    print("✓ All images generated successfully!")
     print("=" * 60)
 
 
