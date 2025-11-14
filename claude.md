@@ -16,6 +16,7 @@ This document provides guidelines for AI coding agents working on the Toddler Ga
 - 🇵🇱 **All text, sounds, and instructions must be in POLISH**
 - 📱 **Optimized for LANDSCAPE orientation on tablets/mobile devices**
 - 🎨 **Design for horizontal layout (16:9 or 16:10 aspect ratio)**
+- 📱 **Supports small phones in landscape (down to 667×375 resolution)**
 
 ## ⚠️ Critical Constraints
 
@@ -109,6 +110,31 @@ toddler_games/
 - Use CSS transforms for animations (GPU accelerated)
 - `touch-action: manipulation` to prevent zoom
 - Portrait mode automatically shows rotation hint (via common.css)
+
+**Responsive Breakpoints for Landscape Mode:**
+The app uses mobile-first responsive design with specific breakpoints for landscape orientation:
+
+- **≤700px width**: Very small phones (e.g., 667×375 - iPhone SE, iPhone 8)
+  - 2-column game grid on main menu
+  - Reduced header height (38px), smaller buttons (36px)
+  - Drawing game: 80px toolbar width
+  - Bubbles game: 4×3 grid, 35-50px bubbles
+  - Balloons game: 60-100px balloon sizes
+  - Compact fonts and minimal spacing
+
+- **701-768px width**: Small phones and tablets
+  - 3-column game grid on main menu
+  - Header height 45px, buttons 40px
+  - Standard game layouts with moderate scaling
+
+- **769-1024px width**: Medium tablets
+  - Full 3-column layout
+  - Standard element sizes
+
+- **>1024px width**: Large tablets and desktops
+  - Larger fonts and spacing for comfortable viewing
+
+**Always test landscape mode on small devices!** Use browser dev tools to simulate 667×375 resolution.
 
 ### JavaScript - Use shared/common.js
 
@@ -289,9 +315,10 @@ updateScore() {
 ## 🧪 Testing Checklist
 
 - [ ] **Landscape mode works** (primary use case, portrait shows rotation hint)
+- [ ] **Tested on small phones** (667×375 resolution in landscape mode)
 - [ ] **All text is in Polish** (no English visible)
 - [ ] Polish characters display correctly (ą, ć, ę, ł, ń, ó, ś, ź, ż)
-- [ ] Touch targets ≥ 60px × 60px
+- [ ] Touch targets ≥ 60px × 60px (or appropriately scaled for small screens)
 - [ ] Smooth 60fps animation
 - [ ] No console errors
 - [ ] Sound/speech toggle works (state persists)
@@ -304,11 +331,13 @@ updateScore() {
 1. ❌ **English text** → ✅ Use Polish (`POLISH_TEXT` constants)
 2. ❌ `<html lang="en">` → ✅ `<html lang="pl">`
 3. ❌ Portrait-first design → ✅ Landscape-first (horizontal layouts)
-4. ❌ `import/export` → ✅ Object-based modules
-5. ❌ npm packages → ✅ Self-contained code
-6. ❌ Small touch targets → ✅ Minimum 60px × 60px
-7. ❌ Forgetting cleanup → ✅ Remove listeners in `destroy()`
-8. ❌ Absolute paths `/styles.css` → ✅ Relative `./shared/common.css`
+4. ❌ Testing only on tablets → ✅ Test on small phones (667×375) too!
+5. ❌ `import/export` → ✅ Object-based modules
+6. ❌ npm packages → ✅ Self-contained code
+7. ❌ Small touch targets → ✅ Minimum 60px × 60px (scaled appropriately)
+8. ❌ Forgetting cleanup → ✅ Remove listeners in `destroy()`
+9. ❌ Absolute paths `/styles.css` → ✅ Relative `./shared/common.css`
+10. ❌ Fixed layouts → ✅ Add responsive breakpoints (@media queries)
 
 ## 🎯 Performance Tips
 
