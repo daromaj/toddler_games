@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Karmienie Zwierzatek - Toddler Games</title>
+  <link rel="stylesheet" href="../shared/common.css">
+  <style>
+    .game-area {
+      background: linear-gradient(to bottom, #FFF9E6 0%, #FFE6C7 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .animal-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .animal {
+      font-size: 180px;
+      animation: idle 2s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
+
+    .animal.eating {
+      animation: eat 0.5s ease-in-out;
+    }
+
+    .food-bubble {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      animation: float-bubble 3s ease-in-out infinite;
+      transition: transform 0.2s ease;
+      border: 4px solid white;
+    }
+
+    .food-bubble:hover {
+      transform: scale(1.1);
+    }
+
+    .food-bubble:active {
+      transform: scale(0.9);
+    }
+
+    .food-bubble.popping {
+      animation: pop 0.5s ease-out forwards;
+    }
+
+    .animal-name {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px 30px;
+      border-radius: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    .progress-bar {
+      position: absolute;
+      top: 80px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    .progress-hearts {
+      display: flex;
+      gap: 8px;
+      font-size: 32px;
+    }
+
+    .heart {
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+    }
+
+    .heart.filled {
+      opacity: 1;
+      animation: heartbeat 0.3s ease;
+    }
+
+    @keyframes idle {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    @keyframes eat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15) rotate(5deg); }
+    }
+
+    @keyframes float-bubble {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.8; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+    @keyframes fall-food {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(200px) scale(0.5); opacity: 0; }
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 700px) and (orientation: landscape) {
+      .animal-container {
+        width: 200px;
+        height: 200px;
+        margin-bottom: 20px;
+      }
+      .animal { font-size: 120px; }
+      .food-bubble {
+        width: 70px;
+        height: 70px;
+        font-size: 40px;
+        border: 3px solid white;
+      }
+      .animal-name {
+        top: 10px;
+        padding: 8px 16px;
+        font-size: 20px;
+        border-radius: 12px;
+      }
+      .progress-bar {
+        top: 50px;
+        right: 10px;
+        padding: 10px;
+        border-radius: 12px;
+      }
+      .progress-hearts {
+        gap: 5px;
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 768px) and (min-width: 701px) {
+      .animal-container {
+        width: 240px;
+        height: 240px;
+        margin-bottom: 30px;
+      }
+      .animal { font-size: 140px; }
+      .food-bubble {
+        width: 80px;
+        height: 80px;
+        font-size: 50px;
+      }
+      .animal-name {
+        font-size: 24px;
+        padding: 10px 20px;
+      }
+      .progress-hearts { font-size: 26px; }
+    }
+
+    @media (min-width: 1400px) {
+      .animal-container {
+        width: 360px;
+        height: 360px;
+        margin-bottom: 50px;
+      }
+      .animal { font-size: 220px; }
+      .food-bubble {
+        width: 120px;
+        height: 120px;
+        font-size: 72px;
+      }
+      .animal-name { font-size: 38px; }
+      .progress-hearts { font-size: 38px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h2 style="font-size: 32px; color: #333;">🐰 Karmienie</h2>
+    <button class="sound-toggle">🔊 Dźwięk</button>
+  </div>
+
+  <div class="game-area" id="gameArea">
+    <div class="animal-name" id="animalName">Królik</div>
+    <div class="progress-bar">
+      <div class="progress-hearts" id="progressHearts">
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+      </div>
+    </div>
+    <div class="animal-container">
+      <div class="animal" id="animal">🐰</div>
+    </div>
+  </div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Animal configurations
+    const animals = [
+      { emoji: '🐰', name: 'Królik', foods: ['🥕', '🥬', '🌾'] },
+      { emoji: '🐶', name: 'Piesek', foods: ['🦴', '🥩', '🍖'] },
+      { emoji: '🐱', name: 'Kotek', foods: ['🐟', '🥛', '🐭'] },
+      { emoji: '🐻', name: 'Miś', foods: ['🍯', '🐟', '🍓'] },
+      { emoji: '🐘', name: 'Słoń', foods: ['🍌', '🥜', '🌿'] },
+      { emoji: '🐵', name: 'Małpka', foods: ['🍌', '🍑', '🥥'] }
+    ];
+
+    let currentAnimalIndex = 0;
+    let feedCount = 0;
+    const maxFeeds = 5;
+    let foodBubbles = [];
+
+    // Initialize game
+    function init() {
+      showAnimal();
+      spawnFoodBubbles();
+    }
+
+    function showAnimal() {
+      const animal = animals[currentAnimalIndex];
+      document.getElementById('animal').textContent = animal.emoji;
+      document.getElementById('animalName').textContent = animal.name;
+      feedCount = 0;
+      updateProgress();
+
+      // Speak animal name
+      setTimeout(() => {
+        speechManager.speak(`Nakarm ${animal.name.toLowerCase()}a!`);
+      }, 300);
+    }
+
+    function spawnFoodBubbles() {
+      // Clear existing bubbles
+      foodBubbles.forEach(bubble => bubble.remove());
+      foodBubbles = [];
+
+      const animal = animals[currentAnimalIndex];
+      const gameArea = document.getElementById('gameArea');
+      const positions = [
+        { x: 15, y: 25 },
+        { x: 75, y: 30 },
+        { x: 85, y: 65 },
+        { x: 20, y: 70 }
+      ];
+
+      animal.foods.forEach((food, index) => {
+        const bubble = document.createElement('div');
+        bubble.className = 'food-bubble';
+        bubble.textContent = food;
+        bubble.style.left = positions[index % positions.length].x + '%';
+        bubble.style.top = positions[index % positions.length].y + '%';
+        bubble.style.animationDelay = (index * 0.3) + 's';
+
+        bubble.addEventListener('click', () => feedAnimal(bubble, food));
+
+        gameArea.appendChild(bubble);
+        foodBubbles.push(bubble);
+      });
+    }
+
+    function feedAnimal(bubble, food) {
+      if (bubble.classList.contains('popping')) return;
+
+      // Pop animation
+      bubble.classList.add('popping');
+      soundManager.playPop();
+
+      // Create falling food
+      const fallingFood = document.createElement('div');
+      fallingFood.textContent = food;
+      fallingFood.style.position = 'absolute';
+      fallingFood.style.left = bubble.style.left;
+      fallingFood.style.top = bubble.style.top;
+      fallingFood.style.fontSize = '60px';
+      fallingFood.style.animation = 'fall-food 0.6s ease-in forwards';
+      fallingFood.style.pointerEvents = 'none';
+      fallingFood.style.zIndex = '5';
+      document.getElementById('gameArea').appendChild(fallingFood);
+
+      setTimeout(() => {
+        fallingFood.remove();
+      }, 600);
+
+      // Animal eating
+      setTimeout(() => {
+        const animalEl = document.getElementById('animal');
+        animalEl.classList.add('eating');
+        soundManager.playSuccess();
+
+        setTimeout(() => {
+          animalEl.classList.remove('eating');
+        }, 500);
+
+        feedCount++;
+        updateProgress();
+
+        if (feedCount >= maxFeeds) {
+          setTimeout(() => {
+            celebrateAndNextAnimal();
+          }, 800);
+        } else {
+          // Respawn this food bubble
+          setTimeout(() => {
+            bubble.classList.remove('popping');
+          }, 800);
+        }
+      }, 400);
+    }
+
+    function updateProgress() {
+      const hearts = document.querySelectorAll('.heart');
+      hearts.forEach((heart, index) => {
+        if (index < feedCount) {
+          heart.classList.add('filled');
+        } else {
+          heart.classList.remove('filled');
+        }
+      });
+    }
+
+    function celebrateAndNextAnimal() {
+      // Celebration
+      const celebration = POLISH_TEXT.celebrations[Math.floor(Math.random() * POLISH_TEXT.celebrations.length)];
+      speechManager.speak(celebration);
+      particleManager.createCelebration(window.innerWidth / 2, window.innerHeight / 2);
+
+      // Next animal
+      setTimeout(() => {
+        currentAnimalIndex = (currentAnimalIndex + 1) % animals.length;
+        showAnimal();
+        spawnFoodBubbles();
+      }, 2000);
+    }
+
+    // Start game
+    init();
+
+    // Welcome message
+    setTimeout(() => {
+      speechManager.speakWelcome('Nakarm zwierzątka!');
+    }, 500);
+  </script>
+</body>
+</html>

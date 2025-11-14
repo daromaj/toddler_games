@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Pianino - Toddler Games</title>
+  <link rel="stylesheet" href="../shared/common.css">
+  <style>
+    .game-area {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .piano-container {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: flex-end;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .piano-key {
+      flex: 1;
+      min-width: 80px;
+      height: 280px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 20px;
+      font-size: 48px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .piano-key::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .piano-key:active,
+    .piano-key.playing {
+      transform: scale(0.95);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      filter: brightness(1.2);
+    }
+
+    .piano-key .note-name {
+      position: absolute;
+      bottom: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .piano-key .key-icon {
+      font-size: 56px;
+      margin-bottom: 40px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .mode-selector {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .mode-btn {
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+
+    .mode-btn.active {
+      background: var(--color-green);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Key colors */
+    .key-red { background: var(--color-red); }
+    .key-orange { background: var(--color-orange); }
+    .key-yellow { background: var(--color-yellow); }
+    .key-green { background: var(--color-green); }
+    .key-blue { background: var(--color-blue); }
+    .key-purple { background: var(--color-purple); }
+    .key-pink { background: var(--color-pink); }
+    .key-cyan { background: hsl(180, 100%, 50%); }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 700px) and (orientation: landscape) {
+      .piano-container {
+        gap: 4px;
+        max-width: 600px;
+      }
+      .piano-key {
+        min-width: 50px;
+        height: 140px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+      .piano-key .key-icon {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+      .piano-key .note-name {
+        bottom: 8px;
+        font-size: 12px;
+      }
+      .mode-selector {
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      .mode-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+        border-radius: 10px;
+      }
+    }
+
+    @media (max-width: 768px) and (min-width: 701px) {
+      .piano-container {
+        gap: 6px;
+        max-width: 700px;
+      }
+      .piano-key {
+        min-width: 60px;
+        height: 180px;
+        padding: 12px;
+      }
+      .piano-key .key-icon {
+        font-size: 36px;
+        margin-bottom: 25px;
+      }
+      .piano-key .note-name {
+        font-size: 16px;
+      }
+      .mode-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .piano-key {
+        min-width: 100px;
+        height: 340px;
+        padding: 25px;
+      }
+      .piano-key .key-icon {
+        font-size: 72px;
+        margin-bottom: 50px;
+      }
+      .piano-key .note-name {
+        font-size: 28px;
+      }
+      .mode-btn {
+        padding: 18px 36px;
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h2 style="font-size: 32px; color: white;">🎹 Pianino</h2>
+    <button class="sound-toggle">🔊 Dźwięk</button>
+  </div>
+
+  <div class="game-area" id="gameArea">
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="notes">🎵 Nuty</button>
+      <button class="mode-btn" data-mode="animals">🐾 Zwierzęta</button>
+    </div>
+
+    <div class="piano-container" id="pianoKeys"></div>
+  </div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Audio context for generating tones
+    let audioContext = null;
+    let currentMode = 'notes';
+
+    // Note configurations (C major scale)
+    const noteKeys = [
+      { note: 'C', frequency: 261.63, color: 'red', icon: '🎵', name: 'Do' },
+      { note: 'D', frequency: 293.66, color: 'orange', icon: '🎶', name: 'Re' },
+      { note: 'E', frequency: 329.63, color: 'yellow', icon: '🎵', name: 'Mi' },
+      { note: 'F', frequency: 349.23, color: 'green', icon: '🎶', name: 'Fa' },
+      { note: 'G', frequency: 392.00, color: 'blue', icon: '🎵', name: 'Sol' },
+      { note: 'A', frequency: 440.00, color: 'purple', icon: '🎶', name: 'La' },
+      { note: 'B', frequency: 493.88, color: 'pink', icon: '🎵', name: 'Si' },
+      { note: 'C2', frequency: 523.25, color: 'cyan', icon: '🎶', name: 'Do' }
+    ];
+
+    // Animal sound configurations
+    const animalKeys = [
+      { name: 'Kot', icon: '🐱', color: 'red', sound: 'meow' },
+      { name: 'Pies', icon: '🐶', color: 'orange', sound: 'woof' },
+      { name: 'Krowa', icon: '🐮', color: 'yellow', sound: 'moo' },
+      { name: 'Owca', icon: '🐑', color: 'green', sound: 'baa' },
+      { name: 'Koń', icon: '🐴', color: 'blue', sound: 'neigh' },
+      { name: 'Kaczka', icon: '🦆', color: 'purple', sound: 'quack' },
+      { name: 'Świnia', icon: '🐷', color: 'pink', sound: 'oink' },
+      { name: 'Kogut', icon: '🐓', color: 'cyan', sound: 'cockadoodledoo' }
+    ];
+
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(frequency, duration = 0.3) {
+      if (!soundManager.enabled) return;
+
+      initAudioContext();
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      // Envelope for smooth sound
+      const now = audioContext.currentTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }
+
+    function playAnimalSound(sound) {
+      if (!soundManager.enabled) return;
+
+      // Using speech synthesis for animal sounds
+      const soundText = {
+        'meow': 'Miau miau',
+        'woof': 'Hau hau',
+        'moo': 'Muuu',
+        'baa': 'Beeee',
+        'neigh': 'Iha ha',
+        'quack': 'Kwa kwa',
+        'oink': 'Chrum chrum',
+        'cockadoodledoo': 'Kukuryku'
+      };
+
+      speechManager.speak(soundText[sound] || sound, { rate: 1.2, pitch: 1.3 });
+    }
+
+    function createPianoKeys() {
+      const container = document.getElementById('pianoKeys');
+      container.innerHTML = '';
+
+      const keys = currentMode === 'notes' ? noteKeys : animalKeys;
+
+      keys.forEach((key, index) => {
+        const keyEl = document.createElement('div');
+        keyEl.className = `piano-key key-${key.color}`;
+        keyEl.innerHTML = `
+          <div class="key-icon">${key.icon}</div>
+          <div class="note-name">${key.name}</div>
+        `;
+
+        keyEl.style.animationDelay = (index * 0.1) + 's';
+
+        keyEl.addEventListener('click', () => {
+          playKey(keyEl, key);
+        });
+
+        // Touch support
+        keyEl.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          playKey(keyEl, key);
+        });
+
+        container.appendChild(keyEl);
+      });
+    }
+
+    function playKey(keyEl, key) {
+      // Visual feedback
+      keyEl.classList.add('playing');
+      setTimeout(() => {
+        keyEl.classList.remove('playing');
+      }, 200);
+
+      // Play sound
+      if (currentMode === 'notes') {
+        playTone(key.frequency);
+      } else {
+        playAnimalSound(key.sound);
+      }
+
+      // Random celebration on every 10th key press
+      if (Math.random() < 0.1) {
+        const rect = keyEl.getBoundingClientRect();
+        particleManager.createCelebration(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      }
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      createPianoKeys();
+
+      // Update mode buttons
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        if (btn.dataset.mode === mode) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Announce mode
+      const modeText = mode === 'notes' ? 'Nuty' : 'Dźwięki zwierząt';
+      speechManager.speak(modeText);
+    }
+
+    // Mode selector
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundManager.playSuccess();
+        switchMode(btn.dataset.mode);
+      });
+    });
+
+    // Initialize
+    createPianoKeys();
+
+    // Welcome message
+    setTimeout(() => {
+      speechManager.speakWelcome('Zagraj na pianinie!');
+    }, 500);
+
+    // Initialize audio context on first user interaction
+    document.addEventListener('click', initAudioContext, { once: true });
+    document.addEventListener('touchstart', initAudioContext, { once: true });
+  </script>
+</body>
+</html>
