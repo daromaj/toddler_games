@@ -142,8 +142,11 @@
       balloon.style.width = size + 'px';
       balloon.style.height = size + 'px';
 
+      const gameArea = document.getElementById('gameArea');
+      const areaWidth = gameArea.clientWidth;
       const margin = window.innerWidth <= 700 ? 100 : 150;
-      balloon.style.left = Utils.randomInt(50, window.innerWidth - margin) + 'px';
+      const maxLeft = Math.max(50, areaWidth - margin);
+      balloon.style.left = Utils.randomInt(50, maxLeft) + 'px';
       balloon.style.bottom = '-150px';
 
       const rotation = Utils.randomInt(-30, 30);

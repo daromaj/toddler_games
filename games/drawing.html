@@ -12,10 +12,13 @@
       background: white;
       display: flex;
       flex-direction: row;
+      width: 100%;
     }
 
     .toolbar {
       width: 150px;
+      min-width: 150px;
+      max-width: 150px;
       background: rgba(255, 255, 255, 0.95);
       border-right: 3px solid #e0e0e0;
       display: flex;
@@ -24,6 +27,7 @@
       gap: var(--spacing-md);
       align-items: center;
       overflow-y: auto;
+      flex-shrink: 0;
     }
 
     .toolbar-section {
@@ -120,6 +124,8 @@
     @media (max-width: 700px) and (orientation: landscape) {
       .toolbar {
         width: 80px;
+        min-width: 80px;
+        max-width: 80px;
         padding: 8px;
         gap: 8px;
       }
@@ -154,6 +160,8 @@
     @media (max-width: 1024px) and (min-width: 701px) and (orientation: landscape) {
       .toolbar {
         width: 120px;
+        min-width: 120px;
+        max-width: 120px;
       }
       .color-btn {
         width: 50px;
