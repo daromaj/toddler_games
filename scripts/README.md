@@ -66,6 +66,7 @@ Images can be generated automatically using GitHub Actions:
 
 ## Image Specifications
 
+- **Model**: gemini-2.5-flash-image (stable, current recommended model)
 - **Format**: PNG and WebP (dual format for compatibility)
 - **Background**: Transparent (removed automatically using rembg)
 - **Style**: Sticker-like, toddler-friendly cartoon style

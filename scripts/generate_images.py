@@ -34,13 +34,14 @@ def configure_gemini():
     print("✓ Gemini API configured")
 
 
-def generate_image(prompt, model_name="gemini-2.0-flash-exp"):
+def generate_image(prompt, model_name="gemini-2.5-flash-image"):
     """
     Generate an image using Gemini API.
 
     Args:
         prompt: Text description of the image to generate
-        model_name: Gemini model to use
+        model_name: Gemini model to use for image generation
+                   (default: gemini-2.5-flash-image - current stable model)
 
     Returns:
         PIL Image object or None on failure
@@ -188,6 +189,10 @@ def generate_category(category_data, output_dir, delay=2):
     print(f"Output: {output_path}")
     print(f"{'='*60}\n")
 
+    success_count = 0
+    skip_count = 0
+    fail_count = 0
+
     for idx, item in enumerate(category_data.get('items', []), 1):
         print(f"[{idx}/{total}] {item['name']}")
 
@@ -196,6 +201,7 @@ def generate_category(category_data, output_dir, delay=2):
         # Check if already exists (skip regeneration)
         if output_file.with_suffix('.png').exists():
             print(f"  ⚠ File exists, skipping (delete to regenerate)")
+            skip_count += 1
             continue
 
         # Generate image
@@ -211,14 +217,21 @@ def generate_category(category_data, output_dir, delay=2):
             # Save in multiple formats
             save_image(image, str(output_file), formats=['png', 'webp'])
 
+            success_count += 1
+
             # Rate limiting delay
             if idx < total:
                 print(f"  ⏳ Waiting {delay}s before next generation...")
                 time.sleep(delay)
+        else:
+            fail_count += 1
 
         print()
 
-    print(f"✓ Completed {category_data.get('name', 'category')}\n")
+    print(f"{'='*60}")
+    print(f"✓ Completed {category_data.get('name', 'category')}")
+    print(f"  Success: {success_count}, Skipped: {skip_count}, Failed: {fail_count}")
+    print(f"{'='*60}\n")
 
 
 def main():
@@ -247,6 +260,8 @@ def main():
     args = parser.parse_args()
 
     print("🎨 AI Image Generator for Toddler Games")
+    print("=" * 60)
+    print("Model: gemini-2.5-flash-image")
     print("=" * 60)
 
     # Configure API

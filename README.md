@@ -450,7 +450,7 @@ python scripts/generate_images.py --category all
 
 ### Technical Details
 
-- **Model**: Gemini 2.0 Flash (free tier available)
+- **Model**: gemini-2.5-flash-image (stable, current recommended model)
 - **Background Removal**: Automatic using rembg library
 - **Optimization**: Images resized to max 1024px dimension
 - **Formats**: PNG (for compatibility) + WebP (for performance)
