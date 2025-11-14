@@ -4,14 +4,13 @@ Generate AI images for toddler games using Google Gemini API.
 Includes automatic background removal and optimization.
 """
 
-import google.generativeai as genai
+from google import genai
 import os
 import sys
 import json
 import argparse
 from PIL import Image
 from pathlib import Path
-import io
 import time
 
 try:
@@ -23,22 +22,24 @@ except ImportError:
     print("Install with: pip install rembg")
 
 
-def configure_gemini():
-    """Configure Gemini API with error handling."""
+def create_client():
+    """Create and configure Gemini API client with error handling."""
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         print("Error: GEMINI_API_KEY environment variable not set")
         sys.exit(1)
 
-    genai.configure(api_key=api_key)
+    client = genai.Client(api_key=api_key)
     print("✓ Gemini API configured")
+    return client
 
 
-def generate_image(prompt, model_name="gemini-2.5-flash-image"):
+def generate_image(client, prompt, model_name="gemini-2.5-flash-image"):
     """
     Generate an image using Gemini API.
 
     Args:
+        client: Gemini API client
         prompt: Text description of the image to generate
         model_name: Gemini model to use for image generation
                    (default: gemini-2.5-flash-image - current stable model)
@@ -49,26 +50,22 @@ def generate_image(prompt, model_name="gemini-2.5-flash-image"):
     try:
         print(f"  Generating: {prompt[:60]}...")
 
-        config = genai.types.GenerationConfig(
-            response_mime_type="image/png",
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[prompt],
         )
 
-        model = genai.GenerativeModel(
-            model_name=model_name,
-            generation_config=config
-        )
+        # Extract image from response
+        for part in response.parts:
+            if part.inline_data is not None:
+                image = part.as_image()
+                print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
+                return image
+            elif part.text is not None:
+                print(f"  ⚠ Received text response: {part.text[:60]}...")
 
-        response = model.generate_content(prompt)
-
-        # Access the image data
-        if hasattr(response, 'parts') and response.parts:
-            image_data = response.parts[0].inline_data
-            image = Image.open(io.BytesIO(image_data.data))
-            print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
-            return image
-        else:
-            print(f"  ✗ No image data in response")
-            return None
+        print(f"  ✗ No image data in response")
+        return None
 
     except Exception as e:
         print(f"  ✗ Error generating image: {e}")
@@ -171,11 +168,12 @@ def load_prompts(prompts_file):
         sys.exit(1)
 
 
-def generate_category(category_data, output_dir, delay=2):
+def generate_category(client, category_data, output_dir, delay=2):
     """
     Generate all images for a category.
 
     Args:
+        client: Gemini API client
         category_data: Dictionary with prompts and filenames
         output_dir: Output directory path
         delay: Delay between API calls (seconds)
@@ -205,7 +203,7 @@ def generate_category(category_data, output_dir, delay=2):
             continue
 
         # Generate image
-        image = generate_image(item['prompt'])
+        image = generate_image(client, item['prompt'])
 
         if image:
             # Remove background
@@ -264,8 +262,8 @@ def main():
     print("Model: gemini-2.5-flash-image")
     print("=" * 60)
 
-    # Configure API
-    configure_gemini()
+    # Create API client
+    client = create_client()
 
     # Load prompts
     prompts = load_prompts(args.prompts)
@@ -284,7 +282,7 @@ def main():
     for category in categories:
         category_data = prompts[category]
         output_dir = f"images/{category}"
-        generate_category(category_data, output_dir, delay=args.delay)
+        generate_category(client, category_data, output_dir, delay=args.delay)
 
     print("=" * 60)
     print("✓ All images generated successfully!")
