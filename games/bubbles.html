@@ -182,7 +182,49 @@
       }
     }
 
-    @media (max-width: 768px) {
+    /* Very small phones in landscape (e.g., 667x375) */
+    @media (max-width: 700px) and (orientation: landscape) {
+      .game-area {
+        padding: 8px;
+      }
+      .bubbles-container {
+        gap: 5px;
+        padding: 6px;
+        max-width: 65%;
+        max-height: 94%;
+        grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+      }
+      .bubble {
+        min-width: 35px;
+        max-width: 50px;
+      }
+      .score-panel {
+        top: 45px;
+        right: 6px;
+        padding: 8px;
+        min-width: 85px;
+      }
+      .score-label {
+        font-size: 12px;
+        margin-bottom: 2px;
+      }
+      .score-value {
+        font-size: 24px;
+      }
+      .pattern-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+        margin: 4px 0;
+        height: auto;
+        min-height: auto;
+      }
+      .progress-bar {
+        height: 12px;
+        margin-top: 6px;
+      }
+    }
+
+    @media (max-width: 768px) and (min-width: 701px) {
       .bubbles-container {
         gap: 6px;
         padding: 8px;
@@ -268,7 +310,12 @@
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      if (width <= 768) {
+      if (width <= 700) {
+        // Very small mobile screens (e.g., 667x375)
+        cols = 4;
+        rows = 3;
+        totalBubbles = rows * cols;
+      } else if (width <= 768) {
         // Small mobile screens
         cols = 5;
         rows = 3;
