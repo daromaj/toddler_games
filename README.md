@@ -398,6 +398,86 @@ If using shared resources (Option 3):
 - Touch targets minimum 60px × 60px
 - Toddler can navigate between games independently
 
+## 🎨 AI-Generated Images
+
+This project now includes support for AI-generated images to enhance the visual experience! Instead of using emojis and basic SVG graphics, games can use custom AI-generated artwork created with Google's Gemini API.
+
+### Features
+
+- **Toddler-Friendly Style**: All images are generated with a cute, cartoon sticker-like appearance
+- **Transparent Backgrounds**: Automatic background removal for seamless integration
+- **Dual Format**: Images saved as both PNG and WebP for optimal performance
+- **Graceful Fallback**: Games automatically fall back to emojis if images aren't available yet
+- **GitHub Actions Integration**: Automated image generation workflow
+
+### Image Categories
+
+The project includes prompts for generating:
+
+- **Animals** (6 images): Rabbit, dog, cat, bear, elephant, monkey - for the feeding game
+- **Food Items** (16 images): Carrot, lettuce, wheat, bone, meat, fish, milk, honey, etc. - for the feeding game
+- **Shapes** (6 images): Circle, square, triangle, star, heart, pentagon - for the shapes game
+- **Balloons** (4+ images): Various balloon shapes and colors - for the balloon game
+- **Backgrounds** (2+ images): Themed backgrounds for different games
+
+### How to Generate Images
+
+Images are generated using a Python script with the Gemini API. There are two ways to generate them:
+
+#### Option 1: GitHub Actions (Recommended)
+
+1. Add `GEMINI_API_KEY` to repository secrets (Settings → Secrets → Actions)
+2. Go to Actions tab → "Generate AI Game Images"
+3. Click "Run workflow"
+4. Select category (animals, food, shapes, balloons, backgrounds, or all)
+5. Set delay between API calls (default: 2 seconds)
+6. Images are automatically generated, optimized, and committed
+
+#### Option 2: Local Generation
+
+```bash
+# Install dependencies
+pip install -r scripts/requirements.txt
+
+# Set API key
+export GEMINI_API_KEY="your-api-key-here"
+
+# Generate images
+python scripts/generate_images.py --category animals
+python scripts/generate_images.py --category food
+python scripts/generate_images.py --category all
+```
+
+### Technical Details
+
+- **Model**: Gemini 2.0 Flash (free tier available)
+- **Background Removal**: Automatic using rembg library
+- **Optimization**: Images resized to max 1024px dimension
+- **Formats**: PNG (for compatibility) + WebP (for performance)
+- **Storage**: `/images/{category}/{filename}.{ext}`
+
+### Current Implementation Status
+
+- ✅ **Feeding Game**: Fully implemented with AI images (animals + food items)
+- ⏳ **Other Games**: Still using emojis/SVG (can be enhanced in the future)
+
+The feeding game (`games/feeding.html`) automatically uses AI-generated images if available, and falls back to emojis if images haven't been generated yet.
+
+### Cost & Licensing
+
+- **Cost**: Free tier available with Gemini API (check current limits at ai.google.dev)
+- **Licensing**: Generated images are subject to Google Gemini's terms of service
+- **Estimated Usage**: ~50-70 images total for all games
+
+### For More Information
+
+See [`scripts/README.md`](scripts/README.md) for detailed documentation on:
+- Image generation script usage
+- Prompt customization
+- Adding new image categories
+- Troubleshooting
+- Best practices
+
 ## 🔮 Future Ideas
 
 - Animal sounds game (tap animal to hear sound)
