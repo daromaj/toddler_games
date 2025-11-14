@@ -137,7 +137,51 @@
     }
 
     /* Responsive breakpoints */
-    @media (max-width: 768px) and (orientation: landscape) {
+    /* Very small phones in landscape (e.g., 667x375) */
+    @media (max-width: 700px) and (orientation: landscape) {
+      .menu-container {
+        padding: 8px;
+        width: 98%;
+      }
+      .menu-title {
+        font-size: 20px;
+        margin-bottom: 6px;
+      }
+      .menu-subtitle {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .game-card {
+        min-height: 90px;
+        padding: 8px;
+        gap: 4px;
+      }
+      .game-icon { font-size: 28px; }
+      .game-title { font-size: 14px; }
+      .game-description {
+        font-size: 11px;
+        line-height: 1.2;
+      }
+      .coming-soon::after {
+        font-size: 10px;
+        padding: 3px 8px;
+      }
+      .controls {
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .sound-toggle {
+        font-size: 16px;
+        padding: 8px 12px;
+      }
+    }
+
+    @media (max-width: 768px) and (min-width: 701px) and (orientation: landscape) {
       .menu-container { padding: var(--spacing-sm); }
       .menu-title { font-size: 24px; margin-bottom: 8px; }
       .menu-subtitle { font-size: 14px; margin-bottom: 12px; }

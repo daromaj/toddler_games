@@ -66,7 +66,18 @@
       }
     }
 
-    @media (max-width: 768px) {
+    /* Very small phones in landscape (e.g., 667x375) */
+    @media (max-width: 700px) and (orientation: landscape) {
+      .score-display {
+        top: 6px;
+        right: 6px;
+        padding: 6px 12px;
+        font-size: 20px;
+        border-radius: 12px;
+      }
+    }
+
+    @media (max-width: 768px) and (min-width: 701px) {
       .score-display {
         top: 8px;
         right: 8px;
@@ -122,11 +133,17 @@
 
       const color = Utils.randomItem(colors);
       const shape = Utils.randomItem(shapes);
-      const size = Utils.randomInt(80, 140);
+
+      // Adjust balloon size based on screen width
+      const maxSize = window.innerWidth <= 700 ? 100 : 140;
+      const minSize = window.innerWidth <= 700 ? 60 : 80;
+      const size = Utils.randomInt(minSize, maxSize);
 
       balloon.style.width = size + 'px';
       balloon.style.height = size + 'px';
-      balloon.style.left = Utils.randomInt(50, window.innerWidth - 150) + 'px';
+
+      const margin = window.innerWidth <= 700 ? 100 : 150;
+      balloon.style.left = Utils.randomInt(50, window.innerWidth - margin) + 'px';
       balloon.style.bottom = '-150px';
 
       const rotation = Utils.randomInt(-30, 30);

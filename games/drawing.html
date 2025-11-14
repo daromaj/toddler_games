@@ -116,7 +116,42 @@
       animation: rainbow 3s linear infinite;
     }
 
-    @media (max-width: 1024px) and (orientation: landscape) {
+    /* Very small phones in landscape (e.g., 667x375) */
+    @media (max-width: 700px) and (orientation: landscape) {
+      .toolbar {
+        width: 80px;
+        padding: 8px;
+        gap: 8px;
+      }
+      .toolbar-title {
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+      .color-btn {
+        width: 40px;
+        height: 40px;
+        margin: 3px auto;
+        border-width: 3px;
+      }
+      .size-btn {
+        height: 35px;
+        font-size: 14px;
+        margin: 3px 0;
+        border-width: 2px;
+        border-radius: 10px;
+      }
+      .size-indicator {
+        height: 25px;
+      }
+      .action-btn {
+        height: 40px;
+        font-size: 14px;
+        padding: 8px;
+        margin: 3px 0;
+      }
+    }
+
+    @media (max-width: 1024px) and (min-width: 701px) and (orientation: landscape) {
       .toolbar {
         width: 120px;
       }

@@ -292,8 +292,40 @@ body {
   }
 }
 
+/* Very small phones in landscape (e.g., 667x375) */
+@media (max-width: 700px) and (orientation: landscape) {
+  :root {
+    font-size: 16px;
+  }
+
+  .game-header {
+    min-height: 38px;
+    padding: 4px 8px;
+  }
+
+  .game-header h2 {
+    font-size: 16px !important;
+  }
+
+  .home-btn, .sound-toggle {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .btn {
+    min-width: 50px;
+    min-height: 50px;
+    padding: 10px 15px;
+    font-size: 18px;
+    border-radius: 15px;
+  }
+}
+
 /* Even smaller adjustments for mobile phones */
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width: 701px) {
   .game-header {
     min-height: 45px;
     padding: 6px 10px;
