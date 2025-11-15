@@ -18,17 +18,18 @@ from base64 import b64decode
 try:
     from rembg import remove
     REMBG_AVAILABLE = True
-except ImportError as e:  # Capture the exception object as 'e'
+except ImportError as e:  # Capture the exception object
     REMBG_AVAILABLE = False
     print("Warning: rembg not available. Background removal will be skipped.")
-    print("Install with: pip install rembg")
+    print("Install with: pip install rembg[cpu]")
     
-    # --- This is the new part ---
+    # --- This is the new debug part ---
     print("\n" + "="*30)
     print("DEBUG: The specific import error was:")
     print(f"{e}")
     print("="*30 + "\n")
     exit()
+    # --- End new debug part ---
 
 
 def get_api_key():
@@ -50,7 +51,7 @@ def generate_image(api_key, prompt, model_name="black-forest-labs/FLUX-1-schnell
         api_key: Image Router API key
         prompt: Text description of the image to generate
         model_name: Model to use for image generation
-                   (default: black-forest-labs/FLUX-1-schnell:free)
+                    (default: black-forest-labs/FLUX-1-schnell:free)
 
     Returns:
         PIL Image object or None on failure
@@ -229,20 +230,31 @@ def generate_category(api_key, category_data, output_dir, delay=2, model_name="b
     skip_count = 0
     fail_count = 0
 
+    # --- THIS IS THE MODIFIED LOGIC ---
     for idx, item in enumerate(category_data.get('items', []), 1):
         print(f"[{idx}/{total}] {item['name']}")
 
         output_file = output_path / item['filename']
+        png_file = output_file.with_suffix('.png')
+        image = None # Ensure image is None at the start
+        is_existing_file = False
 
-        # Check if already exists (skip regeneration)
-        if output_file.with_suffix('.png').exists():
-            print(f"  ⚠ File exists, skipping (delete to regenerate)")
-            skip_count += 1
-            continue
+        if png_file.exists():
+            print(f"  ✓ File exists. Loading for reprocessing...")
+            try:
+                image = Image.open(png_file)
+                is_existing_file = True
+            except Exception as e:
+                print(f"  ✗ Could not open {png_file.name}: {e}")
+                fail_count += 1
+                continue
+        else:
+            print(f"  File not found. Attempting generation...")
+            # Generate image
+            image = generate_image(api_key, item['prompt'], model_name)
 
-        # Generate image
-        image = generate_image(api_key, item['prompt'], model_name)
-
+        
+        # --- This block now runs for BOTH new and existing images ---
         if image:
             # Remove background
             image = remove_background(image)
@@ -255,14 +267,17 @@ def generate_category(api_key, category_data, output_dir, delay=2, model_name="b
 
             success_count += 1
 
-            # Rate limiting delay
-            if idx < total:
+            # Rate limiting delay (only apply if it was a new generation)
+            if not is_existing_file and idx < total:
                 print(f"  ⏳ Waiting {delay}s before next generation...")
                 time.sleep(delay)
-        else:
+        
+        elif not is_existing_file:
+            # Only count as fail if it was a failed *generation*
             fail_count += 1
 
-        print()
+        print() # Add a newline for readability
+    # --- END OF MODIFIED LOGIC ---
 
     print(f"{'='*60}")
     print(f"✓ Completed {category_data.get('name', 'category')}")
@@ -292,7 +307,7 @@ def main():
         default=2,
         help='Delay between API calls in seconds'
     )
-    parser.add_argument(
+    parser.add.argument(
         '--model',
         type=str,
         default='black-forest-labs/FLUX-1-schnell:free',
