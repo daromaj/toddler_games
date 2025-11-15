@@ -163,6 +163,174 @@ A collection of simple, engaging browser-based games designed for toddlers (ages
 
 ---
 
+### 9. Peek-a-Boo (A kuku) 👀
+**Concept**: Simple tapping on a central object to reveal a hidden character.
+
+**Features**:
+- Single central object (door, box, curtain)
+- Tap to slowly open and reveal hidden character
+- Gentle sound effects on reveal
+- Object automatically closes after brief delay
+- Repeatable discovery mechanic
+- No failure state - purely exploratory
+- Different characters can be hidden (animals, toys, family members)
+
+**Mechanics**: Single tap interaction - simple and intuitive for youngest toddlers
+
+**Educational Value**: Object permanence, cause and effect, anticipation and surprise
+
+---
+
+### 10. Digital Blocks (Cyfrowe Klocki) 🧱
+**Concept**: Drag simple block shapes from container to main play area for free-form building.
+
+**Features**:
+- Simple geometric blocks in container/palette
+- Drag blocks onto main canvas area
+- Simplified physics - blocks "stick" when stacked
+- Open-ended building play with no specific goals
+- Build towers and knock them down
+- Reset button to clear the canvas
+- Different colored blocks
+- Satisfying stacking sounds
+
+**Mechanics**: Drag and drop with simple stacking physics
+
+**Educational Value**: Spatial reasoning, creativity, fine motor skills, cause and effect
+
+---
+
+### 11. Interactive Scene - House (Interaktywna Scena) 🏠
+**Concept**: Open sandbox scene with draggable characters and tappable background elements.
+
+**Features**:
+- Simple house scene with furniture and rooms
+- Draggable characters (family members, pets)
+- Tappable elements trigger slow, gentle animations
+- Turn lights on/off, open/close refrigerator, etc.
+- No goals or objectives - pure creative play
+- Rearrange furniture and characters freely
+- Pleasant sound effects for interactions
+
+**Mechanics**: Drag to move objects, tap to activate scene elements
+
+**Educational Value**: Imaginative play, spatial awareness, cause and effect, storytelling
+
+---
+
+### 12. Tap and Fill Coloring (Kolorowanka) 🎨
+**Concept**: Simplified coloring book - tap color palette, then tap closed areas to fill.
+
+**Features**:
+- Color palette with 6-8 bright colors
+- Pre-drawn outlines with closed regions
+- Tap region to fill with selected color
+- No drawing/tracing - just color selection decisions
+- No "coloring outside lines" frustration
+- Multiple coloring pages/templates
+- Save completed artwork
+- Undo last color choice
+
+**Mechanics**: Two-tap interaction - select color, tap area to fill
+
+**Educational Value**: Color recognition, decision making, creativity without motor skill frustration
+
+---
+
+### 13. Simple Sorting (Proste Sortowanie) 🔵🔴
+**Concept**: Tap screen when slowly falling object is over matching container.
+
+**Features**:
+- Objects fall slowly from top of screen
+- Containers at bottom (sorted by color or shape)
+- Tap when object is over correct container
+- Object gently falls into container with positive sound
+- Wrong tap or no tap - nothing happens (no negative feedback)
+- Gradually increasing variety of objects/colors
+- Celebration when multiple correct sorts achieved
+
+**Mechanics**: Timing-based tapping - single tap when aligned
+
+**Educational Value**: Color/shape recognition, timing, categorization, hand-eye coordination
+
+---
+
+### 14. Tap to Match Puzzle (Układanka) 🧩
+**Concept**: Simplified puzzle where pieces automatically animate to correct position when tapped.
+
+**Features**:
+- 4-6 large puzzle pieces
+- Shadow outlines showing where pieces belong
+- Tap either the piece OR the shadow to auto-place
+- Piece slowly animates to correct position
+- No dragging required - removes frustration
+- Celebration when puzzle complete
+- Multiple puzzle images/themes
+- Progressively more pieces as child develops
+
+**Mechanics**: Single tap on piece or target location
+
+**Educational Value**: Shape recognition, spatial awareness, problem solving without fine motor challenges
+
+---
+
+### 15. Calm Care (Spokojna Opieka) 🌱
+**Concept**: Care for a character (pet, plant) by tapping action icons.
+
+**Features**:
+- Gentle character/plant that needs care
+- 3-4 care action icons (brush, food, water can, etc.)
+- Tap icon to perform slow, positive animation
+- Character responds happily to care
+- No health meters or failure states
+- Watering plant makes it grow/bloom
+- Feeding pet makes it happy/playful
+- Develops empathy and sequencing
+
+**Mechanics**: Tap icons to trigger care animations
+
+**Educational Value**: Empathy, cause and effect, simple sequences, nurturing behavior
+
+---
+
+### 16. Digital Garden (Cyfrowy Ogród) 🌳
+**Concept**: Create peaceful garden scene by tapping to place objects.
+
+**Features**:
+- Icon palette (trees, flowers, clouds, sun, butterflies)
+- Tap icon, then tap background to place
+- Objects persist on scene
+- Tap cloud to trigger gentle rain animation
+- Tap sun for warm glow effect
+- Pure creative mode with no goals
+- Peaceful ambient sounds
+- Clear canvas to start fresh
+
+**Mechanics**: Two-tap interaction - select object, place on canvas
+
+**Educational Value**: Creativity, planning, cause and effect, peaceful creative expression
+
+---
+
+### 17. Chain Reaction (Reakcja Łańcuchowa) ⚙️
+**Concept**: Single tap triggers slow, predictable sequence of events.
+
+**Features**:
+- Rube Goldberg-style contraption on screen
+- One start button
+- Tap button to trigger chain reaction
+- Ball rolls, hits dominos, rings bell, etc.
+- Slow, visible sequence for easy tracking
+- Completely predictable - same result each time
+- Multiple "machines" with different sequences
+- Gentle sounds for each step
+
+**Mechanics**: Single tap to initiate sequence
+
+**Educational Value**: Cause and effect (one action, many results), sequencing, patience, anticipation
+
+---
+
 ## 🏗️ Architecture Overview
 
 GitHub Pages serves static files, so you have flexibility in organizing your code. Choose the approach that works best for your project.
