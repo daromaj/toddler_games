@@ -18,10 +18,17 @@ from base64 import b64decode
 try:
     from rembg import remove
     REMBG_AVAILABLE = True
-except ImportError:
+except ImportError as e:  # Capture the exception object as 'e'
     REMBG_AVAILABLE = False
     print("Warning: rembg not available. Background removal will be skipped.")
     print("Install with: pip install rembg")
+    
+    # --- This is the new part ---
+    print("\n" + "="*30)
+    print("DEBUG: The specific import error was:")
+    print(f"{e}")
+    print("="*30 + "\n")
+    exit()
 
 
 def get_api_key():
