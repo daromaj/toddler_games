@@ -1,4 +1,4 @@
 # AI Image Generation Dependencies
-google-genai>=1.50.1
+requests>=2.31.0
 pillow>=10.0.0
 rembg>=2.0.50

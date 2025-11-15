@@ -20,6 +20,11 @@ on:
         required: false
         type: number
         default: 2
+      model:
+        description: 'AI model to use for image generation'
+        required: false
+        type: string
+        default: 'flux-pro/v1.1'
 
 jobs:
   generate-images:
@@ -48,11 +53,12 @@ jobs:
 
       - name: Generate images
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          IMAGE_ROUTER_API_KEY: ${{ secrets.IMAGE_ROUTER_API_KEY }}
         run: |
           python scripts/generate_images.py \
             --category ${{ github.event.inputs.category }} \
-            --delay ${{ github.event.inputs.delay }}
+            --delay ${{ github.event.inputs.delay }} \
+            --model "${{ github.event.inputs.model }}"
 
       - name: Optimize WebP images
         run: |
@@ -84,9 +90,11 @@ jobs:
 
           # Create commit message
           CATEGORY="${{ github.event.inputs.category }}"
+          MODEL="${{ github.event.inputs.model }}"
           git commit -m "Add AI-generated images for ${CATEGORY}
 
-          Generated using Gemini 2.0 Flash
+          Generated using Image Router API
+          Model: ${MODEL}
           Category: ${CATEGORY}
           Workflow run: ${{ github.run_number }}"
 
@@ -99,6 +107,7 @@ jobs:
           echo "## Image Generation Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Category**: ${{ github.event.inputs.category }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Model**: ${{ github.event.inputs.model }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Delay**: ${{ github.event.inputs.delay }}s" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
