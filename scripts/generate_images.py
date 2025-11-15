@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Generate AI images for toddler games using Google Gemini API.
+Generate AI images for toddler games using Image Router API.
 Includes automatic background removal and optimization.
 """
 
-from google import genai
+import requests
 import os
 import sys
 import json
@@ -12,6 +12,8 @@ import argparse
 from PIL import Image
 from pathlib import Path
 import time
+import io
+from base64 import b64decode
 
 try:
     from rembg import remove
@@ -22,27 +24,26 @@ except ImportError:
     print("Install with: pip install rembg")
 
 
-def create_client():
-    """Create and configure Gemini API client with error handling."""
-    api_key = os.environ.get("GEMINI_API_KEY")
+def get_api_key():
+    """Get Image Router API key from environment with error handling."""
+    api_key = os.environ.get("IMAGE_ROUTER_API_KEY")
     if not api_key:
-        print("Error: GEMINI_API_KEY environment variable not set")
+        print("Error: IMAGE_ROUTER_API_KEY environment variable not set")
         sys.exit(1)
 
-    client = genai.Client(api_key=api_key)
-    print("✓ Gemini API configured")
-    return client
+    print("✓ Image Router API configured")
+    return api_key
 
 
-def generate_image(client, prompt, model_name="gemini-2.5-flash-image"):
+def generate_image(api_key, prompt, model_name="flux-pro/v1.1"):
     """
-    Generate an image using Gemini API.
+    Generate an image using Image Router API.
 
     Args:
-        client: Gemini API client
+        api_key: Image Router API key
         prompt: Text description of the image to generate
-        model_name: Gemini model to use for image generation
-                   (default: gemini-2.5-flash-image - current stable model)
+        model_name: Model to use for image generation
+                   (default: flux-pro/v1.1)
 
     Returns:
         PIL Image object or None on failure
@@ -50,23 +51,52 @@ def generate_image(client, prompt, model_name="gemini-2.5-flash-image"):
     try:
         print(f"  Generating: {prompt[:60]}...")
 
-        response = client.models.generate_content(
-            model=model_name,
-            contents=[prompt],
-        )
+        url = "https://api.imagerouter.io/v1/openai/images/generations"
+        payload = {
+            "prompt": prompt,
+            "model": model_name,
+        }
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
 
-        # Extract image from response
-        for part in response.parts:
-            if part.inline_data is not None:
-                image = part.as_image()
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+
+        response_data = response.json()
+
+        # Extract image from OpenAI-compatible response format
+        if "data" in response_data and len(response_data["data"]) > 0:
+            image_data = response_data["data"][0]
+
+            # Handle base64 encoded image
+            if "b64_json" in image_data:
+                image_bytes = b64decode(image_data["b64_json"])
+                image = Image.open(io.BytesIO(image_bytes))
                 print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
                 return image
-            elif part.text is not None:
-                print(f"  ⚠ Received text response: {part.text[:60]}...")
+
+            # Handle URL response
+            elif "url" in image_data:
+                image_url = image_data["url"]
+                image_response = requests.get(image_url)
+                image_response.raise_for_status()
+                image = Image.open(io.BytesIO(image_response.content))
+                print(f"  ✓ Generated {image.size[0]}x{image.size[1]} image")
+                return image
 
         print(f"  ✗ No image data in response")
         return None
 
+    except requests.exceptions.RequestException as e:
+        print(f"  ✗ Error generating image: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            try:
+                print(f"  Response: {e.response.json()}")
+            except:
+                print(f"  Response: {e.response.text}")
+        return None
     except Exception as e:
         print(f"  ✗ Error generating image: {e}")
         return None
@@ -168,15 +198,16 @@ def load_prompts(prompts_file):
         sys.exit(1)
 
 
-def generate_category(client, category_data, output_dir, delay=2):
+def generate_category(api_key, category_data, output_dir, delay=2, model_name="flux-pro/v1.1"):
     """
     Generate all images for a category.
 
     Args:
-        client: Gemini API client
+        api_key: Image Router API key
         category_data: Dictionary with prompts and filenames
         output_dir: Output directory path
         delay: Delay between API calls (seconds)
+        model_name: Model to use for image generation
     """
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -203,7 +234,7 @@ def generate_category(client, category_data, output_dir, delay=2):
             continue
 
         # Generate image
-        image = generate_image(client, item['prompt'])
+        image = generate_image(api_key, item['prompt'], model_name)
 
         if image:
             # Remove background
@@ -234,7 +265,7 @@ def generate_category(client, category_data, output_dir, delay=2):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generate AI images for toddler games'
+        description='Generate AI images for toddler games using Image Router'
     )
     parser.add_argument(
         '--category',
@@ -254,16 +285,22 @@ def main():
         default=2,
         help='Delay between API calls in seconds'
     )
+    parser.add_argument(
+        '--model',
+        type=str,
+        default='flux-pro/v1.1',
+        help='Image generation model to use (default: flux-pro/v1.1)'
+    )
 
     args = parser.parse_args()
 
     print("🎨 AI Image Generator for Toddler Games")
     print("=" * 60)
-    print("Model: gemini-2.5-flash-image")
+    print(f"Model: {args.model}")
     print("=" * 60)
 
-    # Create API client
-    client = create_client()
+    # Get API key
+    api_key = get_api_key()
 
     # Load prompts
     prompts = load_prompts(args.prompts)
@@ -282,7 +319,7 @@ def main():
     for category in categories:
         category_data = prompts[category]
         output_dir = f"images/{category}"
-        generate_category(client, category_data, output_dir, delay=args.delay)
+        generate_category(api_key, category_data, output_dir, delay=args.delay, model_name=args.model)
 
     print("=" * 60)
     print("✓ All images generated successfully!")

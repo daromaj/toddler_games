@@ -1,10 +1,10 @@
 # AI Image Generation for Toddler Games
 
-This directory contains scripts for generating AI images to enrich the toddler games using Google's Gemini API.
+This directory contains scripts for generating AI images to enrich the toddler games using Image Router API.
 
 ## Overview
 
-The games are enhanced with AI-generated images instead of emojis and SVG graphics. Images are generated using Gemini 2.0 Flash model with automatic background removal.
+The games are enhanced with AI-generated images instead of emojis and SVG graphics. Images are generated using Image Router API (supporting multiple AI models like Flux, DALL-E, Stable Diffusion, etc.) with automatic background removal.
 
 ## Files
 
@@ -23,12 +23,12 @@ pip install -r scripts/requirements.txt
 
 2. Set your API key:
 ```bash
-export GEMINI_API_KEY="your-api-key-here"
+export IMAGE_ROUTER_API_KEY="your-api-key-here"
 ```
 
 3. Generate images:
 ```bash
-# Generate all images
+# Generate all images (default model: flux-pro/v1.1)
 python scripts/generate_images.py --category all
 
 # Generate specific category
@@ -36,21 +36,24 @@ python scripts/generate_images.py --category animals
 
 # Custom delay between API calls
 python scripts/generate_images.py --category food --delay 3
+
+# Specify a different model
+python scripts/generate_images.py --category shapes --model "dall-e-3"
 ```
 
 ### GitHub Actions
 
 Images can be generated automatically using GitHub Actions:
 
-1. Add `GEMINI_API_KEY` to repository secrets:
+1. Add `IMAGE_ROUTER_API_KEY` to repository secrets:
    - Go to Settings → Secrets and variables → Actions
-   - Add new secret: `GEMINI_API_KEY`
+   - Add new secret: `IMAGE_ROUTER_API_KEY`
 
 2. Run workflow:
    - Go to Actions tab
    - Select "Generate AI Game Images"
    - Click "Run workflow"
-   - Choose category and delay
+   - Choose category, delay, and model
    - Click "Run workflow"
 
 3. Generated images will be committed automatically
@@ -66,7 +69,9 @@ Images can be generated automatically using GitHub Actions:
 
 ## Image Specifications
 
-- **Model**: gemini-2.5-flash-image (stable, current recommended model)
+- **API**: Image Router (supports multiple models)
+- **Default Model**: flux-pro/v1.1 (can be changed with --model flag)
+- **Available Models**: flux-pro/v1.1, dall-e-3, stable-diffusion-3, and more
 - **Format**: PNG and WebP (dual format for compatibility)
 - **Background**: Transparent (removed automatically using rembg)
 - **Style**: Sticker-like, toddler-friendly cartoon style
@@ -102,13 +107,14 @@ Edit `prompts.json` and add new items:
 
 ## Costs
 
-- Gemini 2.0 Flash: Free tier available (check current limits at ai.google.dev)
+- Image Router: Pay-as-you-go pricing (check current rates at imagerouter.io)
+- Different models have different costs (Flux Pro, DALL-E 3, etc.)
 - Expected usage: ~50-70 images total for all games
 
 ## Troubleshooting
 
-**Error: GEMINI_API_KEY not set**
-- Set environment variable: `export GEMINI_API_KEY="your-key"`
+**Error: IMAGE_ROUTER_API_KEY not set**
+- Set environment variable: `export IMAGE_ROUTER_API_KEY="your-key"`
 
 **Error: rembg not available**
 - Install: `pip install rembg`
@@ -124,4 +130,4 @@ Edit `prompts.json` and add new items:
 
 ## License
 
-Generated images are subject to Google Gemini's terms of service. Verify licensing for your use case.
+Generated images are subject to Image Router's terms of service and the underlying AI model's licensing terms. Verify licensing for your use case.

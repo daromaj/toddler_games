@@ -400,10 +400,11 @@ If using shared resources (Option 3):
 
 ## 🎨 AI-Generated Images
 
-This project now includes support for AI-generated images to enhance the visual experience! Instead of using emojis and basic SVG graphics, games can use custom AI-generated artwork created with Google's Gemini API.
+This project now includes support for AI-generated images to enhance the visual experience! Instead of using emojis and basic SVG graphics, games can use custom AI-generated artwork created with Image Router API (supporting multiple AI models like Flux, DALL-E, Stable Diffusion, and more).
 
 ### Features
 
+- **Multiple AI Models**: Choose from Flux Pro, DALL-E 3, Stable Diffusion, and more via Image Router
 - **Toddler-Friendly Style**: All images are generated with a cute, cartoon sticker-like appearance
 - **Transparent Backgrounds**: Automatic background removal for seamless integration
 - **Dual Format**: Images saved as both PNG and WebP for optimal performance
@@ -422,16 +423,17 @@ The project includes prompts for generating:
 
 ### How to Generate Images
 
-Images are generated using a Python script with the Gemini API. There are two ways to generate them:
+Images are generated using a Python script with the Image Router API. There are two ways to generate them:
 
 #### Option 1: GitHub Actions (Recommended)
 
-1. Add `GEMINI_API_KEY` to repository secrets (Settings → Secrets → Actions)
+1. Add `IMAGE_ROUTER_API_KEY` to repository secrets (Settings → Secrets → Actions)
 2. Go to Actions tab → "Generate AI Game Images"
 3. Click "Run workflow"
 4. Select category (animals, food, shapes, balloons, backgrounds, or all)
 5. Set delay between API calls (default: 2 seconds)
-6. Images are automatically generated, optimized, and committed
+6. Optionally choose a specific AI model (default: flux-pro/v1.1)
+7. Images are automatically generated, optimized, and committed
 
 #### Option 2: Local Generation
 
@@ -440,17 +442,22 @@ Images are generated using a Python script with the Gemini API. There are two wa
 pip install -r scripts/requirements.txt
 
 # Set API key
-export GEMINI_API_KEY="your-api-key-here"
+export IMAGE_ROUTER_API_KEY="your-api-key-here"
 
-# Generate images
+# Generate images (default model: flux-pro/v1.1)
 python scripts/generate_images.py --category animals
 python scripts/generate_images.py --category food
 python scripts/generate_images.py --category all
+
+# Use a different AI model
+python scripts/generate_images.py --category shapes --model "dall-e-3"
 ```
 
 ### Technical Details
 
-- **Model**: gemini-2.5-flash-image (stable, current recommended model)
+- **API**: Image Router (supports multiple AI models)
+- **Default Model**: flux-pro/v1.1
+- **Available Models**: Flux Pro, DALL-E 3, Stable Diffusion 3, and more
 - **Background Removal**: Automatic using rembg library
 - **Optimization**: Images resized to max 1024px dimension
 - **Formats**: PNG (for compatibility) + WebP (for performance)
@@ -465,8 +472,8 @@ The feeding game (`games/feeding.html`) automatically uses AI-generated images i
 
 ### Cost & Licensing
 
-- **Cost**: Free tier available with Gemini API (check current limits at ai.google.dev)
-- **Licensing**: Generated images are subject to Google Gemini's terms of service
+- **Cost**: Pay-as-you-go with Image Router (pricing varies by model - check imagerouter.io)
+- **Licensing**: Generated images are subject to Image Router's terms of service and underlying AI model's licensing
 - **Estimated Usage**: ~50-70 images total for all games
 
 ### For More Information
