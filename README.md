@@ -312,28 +312,7 @@ A collection of simple, engaging browser-based games designed for toddlers (ages
 
 ---
 
-### 17. Funny Faces with Stickers (Głupie Miny) 🎭
-**Concept**: Tap-based version of "Mr. Potato Head" - build silly faces with parts.
-
-**Features**:
-- Blank face template in center
-- Palette of facial features (5-6 eye options, noses, mouths, hair)
-- Tap feature in palette, then tap face to place
-- Tap placed feature to hear silly sound (honk for nose, etc.)
-- Create wacky combinations
-- Multiple face templates (human, animal, alien)
-- Save silly face creation
-- Simple animation when placing features
-
-**Mechanics**: Two-tap interaction - select feature, tap face to place
-
-**Educational Value**: Creativity, facial recognition, experimentation, humor
-
-**Note**: Alternative to existing Silly Faces game (#7) with tap-based mechanic instead of swipe/cycle
-
----
-
-### 18. Chain Reaction (Reakcja Łańcuchowa) ⚙️
+### 17. Chain Reaction (Reakcja Łańcuchowa) ⚙️
 **Concept**: Single tap triggers slow, predictable sequence of events.
 
 **Features**:
