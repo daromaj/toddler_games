@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>A Kuku - Toddler Games</title>
+  <link rel="stylesheet" href="../shared/common.css">
+  <style>
+    .game-area {
+      background: linear-gradient(to bottom, #FFE5B4 0%, #FFF8DC 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .peekaboo-container {
+      position: relative;
+      width: 400px;
+      height: 500px;
+      max-width: 90vw;
+      max-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Hidden character behind the door */
+    .character {
+      position: absolute;
+      font-size: 200px;
+      z-index: 1;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      text-align: center;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+    }
+
+    .character.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Door container */
+    .door-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Door itself */
+    .door {
+      width: 300px;
+      height: 450px;
+      background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+      border-radius: 20px 20px 0 0;
+      position: relative;
+      transform-origin: left center;
+      transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 10px rgba(0, 0, 0, 0.2);
+      border: 4px solid #654321;
+    }
+
+    .door.open {
+      transform: perspective(1000px) rotateY(-100deg);
+    }
+
+    /* Door decorations */
+    .door::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 85%;
+      border: 6px solid #654321;
+      border-radius: 10px;
+      opacity: 0.5;
+    }
+
+    /* Door handle */
+    .door-handle {
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+      border-radius: 50%;
+      box-shadow:
+        0 5px 10px rgba(0, 0, 0, 0.3),
+        inset 0 2px 5px rgba(255, 255, 255, 0.5);
+      border: 3px solid #DAA520;
+    }
+
+    .door-handle::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      background: #B8860B;
+      border-radius: 50%;
+    }
+
+    /* Instruction text */
+    .instruction {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 36px;
+      font-weight: bold;
+      color: #8B4513;
+      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+      animation: bounce 2s ease-in-out infinite;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 3;
+    }
+
+    .instruction.hidden {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Tap indicator */
+    .tap-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      animation: pulse 1.5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.7;
+    }
+
+    .tap-indicator.hidden {
+      display: none;
+    }
+
+    /* Confetti particles */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) and (orientation: landscape) {
+      .peekaboo-container {
+        width: 300px;
+        height: 400px;
+      }
+
+      .door {
+        width: 220px;
+        height: 350px;
+      }
+
+      .character {
+        font-size: 150px;
+      }
+
+      .instruction {
+        font-size: 28px;
+        bottom: 30px;
+      }
+
+      .tap-indicator {
+        font-size: 60px;
+      }
+    }
+
+    @media (max-width: 700px) and (orientation: landscape) {
+      .peekaboo-container {
+        width: 250px;
+        height: 320px;
+      }
+
+      .door {
+        width: 180px;
+        height: 280px;
+      }
+
+      .character {
+        font-size: 120px;
+      }
+
+      .instruction {
+        font-size: 22px;
+        bottom: 20px;
+      }
+
+      .tap-indicator {
+        font-size: 50px;
+      }
+
+      .door-handle {
+        width: 35px;
+        height: 35px;
+        right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-header">
+    <a href="../index.html" class="home-btn">🏠 Dom</a>
+    <h2 style="font-size: 32px; color: #333;">👀 A Kuku!</h2>
+    <button class="sound-toggle">🔊 Dźwięk</button>
+  </div>
+
+  <div class="game-area" id="gameArea">
+    <div class="peekaboo-container">
+      <!-- Hidden character -->
+      <div class="character" id="character">🐰</div>
+
+      <!-- Door -->
+      <div class="door-container" id="doorContainer">
+        <div class="door" id="door">
+          <div class="door-handle"></div>
+        </div>
+        <div class="tap-indicator" id="tapIndicator">👆</div>
+      </div>
+
+      <!-- Instruction -->
+      <div class="instruction" id="instruction">Stuknij w drzwi!</div>
+    </div>
+  </div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Peek-a-boo game logic
+    const door = document.getElementById('door');
+    const doorContainer = document.getElementById('doorContainer');
+    const character = document.getElementById('character');
+    const instruction = document.getElementById('instruction');
+    const tapIndicator = document.getElementById('tapIndicator');
+    const gameArea = document.getElementById('gameArea');
+
+    let isOpen = false;
+    let closeTimeout = null;
+    let playCount = 0;
+
+    // Characters that can appear
+    const characters = [
+      { emoji: '🐰', name: 'królik', sound: 'Królik!' },
+      { emoji: '🐶', name: 'piesek', sound: 'Piesek!' },
+      { emoji: '🐱', name: 'kotek', sound: 'Kotek!' },
+      { emoji: '🐻', name: 'miś', sound: 'Miś!' },
+      { emoji: '🐘', name: 'słoń', sound: 'Słoń!' },
+      { emoji: '🦁', name: 'lew', sound: 'Lew!' },
+      { emoji: '🐼', name: 'panda', sound: 'Panda!' },
+      { emoji: '🦊', name: 'lis', sound: 'Lis!' },
+      { emoji: '🐸', name: 'żabka', sound: 'Żabka!' },
+      { emoji: '🦉', name: 'sowa', sound: 'Sowa!' }
+    ];
+
+    let currentCharacter = Utils.randomItem(characters);
+    character.textContent = currentCharacter.emoji;
+
+    function openDoor() {
+      if (isOpen) return;
+
+      isOpen = true;
+      playCount++;
+
+      // Hide instruction after first play
+      if (playCount === 1) {
+        instruction.classList.add('hidden');
+        tapIndicator.classList.add('hidden');
+      }
+
+      // Open door animation
+      door.classList.add('open');
+
+      // Play door creak sound
+      soundManager.playClick();
+
+      // Vibrate
+      Utils.vibrate(50);
+
+      // Show character after door starts opening
+      setTimeout(() => {
+        character.classList.add('visible');
+
+        // Play reveal sound
+        soundManager.playSuccess();
+
+        // Speak character name
+        speechManager.speak(currentCharacter.sound, { pitch: 1.3 });
+
+        // Create celebration confetti
+        createConfetti();
+
+        // Speak celebration every 3 plays
+        if (playCount % 3 === 0) {
+          setTimeout(() => {
+            speechManager.speakCelebration();
+          }, 800);
+        }
+      }, 400);
+
+      // Auto-close after 2.5 seconds
+      closeTimeout = setTimeout(closeDoor, 2500);
+    }
+
+    function closeDoor() {
+      if (!isOpen) return;
+
+      // Close door
+      door.classList.remove('open');
+
+      // Hide character
+      character.classList.remove('visible');
+
+      // Change to new random character
+      setTimeout(() => {
+        currentCharacter = Utils.randomItem(characters);
+        character.textContent = currentCharacter.emoji;
+      }, 800);
+
+      isOpen = false;
+
+      // Play gentle close sound
+      setTimeout(() => {
+        soundManager.playTap();
+      }, 500);
+    }
+
+    function createConfetti() {
+      const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#C77DFF', '#FF9B54'];
+      const container = document.querySelector('.peekaboo-container');
+
+      for (let i = 0; i < 15; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = '50%';
+          confetti.style.top = '30%';
+          confetti.style.background = Utils.randomItem(colors);
+          confetti.style.animation = `confetti-fall ${Utils.random(1.5, 2.5)}s linear forwards`;
+          confetti.style.setProperty('--tx', `${Utils.randomInt(-200, 200)}px`);
+          confetti.style.setProperty('--ty', `${Utils.randomInt(100, 300)}px`);
+
+          container.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), 2500);
+        }, i * 50);
+      }
+    }
+
+    // Event listeners
+    doorContainer.addEventListener('click', () => {
+      if (!isOpen) {
+        openDoor();
+      }
+    });
+
+    doorContainer.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (!isOpen) {
+        openDoor();
+      }
+    });
+
+    // Initialize game
+    function initGame() {
+      // Welcome message
+      setTimeout(() => {
+        speechManager.speakWelcome('A kuku! Stuknij w drzwi!');
+      }, 500);
+    }
+
+    // Start game when loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGame);
+    } else {
+      initGame();
+    }
+  </script>
+</body>
+</html>
