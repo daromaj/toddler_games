@@ -28,7 +28,7 @@ export IMAGE_ROUTER_API_KEY="your-api-key-here"
 
 3. Generate images:
 ```bash
-# Generate all images (default model: flux-pro/v1.1)
+# Generate all images (default model: black-forest-labs/FLUX-1-schnell:free)
 python scripts/generate_images.py --category all
 
 # Generate specific category
@@ -70,8 +70,8 @@ Images can be generated automatically using GitHub Actions:
 ## Image Specifications
 
 - **API**: Image Router (supports multiple models)
-- **Default Model**: flux-pro/v1.1 (can be changed with --model flag)
-- **Available Models**: flux-pro/v1.1, dall-e-3, stable-diffusion-3, and more
+- **Default Model**: black-forest-labs/FLUX-1-schnell:free (can be changed with --model flag)
+- **Available Models**: FLUX-1-schnell (free), dall-e-3, stable-diffusion-3, and more
 - **Format**: PNG and WebP (dual format for compatibility)
 - **Background**: Transparent (removed automatically using rembg)
 - **Style**: Sticker-like, toddler-friendly cartoon style

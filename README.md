@@ -432,7 +432,7 @@ Images are generated using a Python script with the Image Router API. There are 
 3. Click "Run workflow"
 4. Select category (animals, food, shapes, balloons, backgrounds, or all)
 5. Set delay between API calls (default: 2 seconds)
-6. Optionally choose a specific AI model (default: flux-pro/v1.1)
+6. Optionally choose a specific AI model (default: black-forest-labs/FLUX-1-schnell:free)
 7. Images are automatically generated, optimized, and committed
 
 #### Option 2: Local Generation
@@ -444,7 +444,7 @@ pip install -r scripts/requirements.txt
 # Set API key
 export IMAGE_ROUTER_API_KEY="your-api-key-here"
 
-# Generate images (default model: flux-pro/v1.1)
+# Generate images (default model: black-forest-labs/FLUX-1-schnell:free)
 python scripts/generate_images.py --category animals
 python scripts/generate_images.py --category food
 python scripts/generate_images.py --category all
@@ -456,8 +456,8 @@ python scripts/generate_images.py --category shapes --model "dall-e-3"
 ### Technical Details
 
 - **API**: Image Router (supports multiple AI models)
-- **Default Model**: flux-pro/v1.1
-- **Available Models**: Flux Pro, DALL-E 3, Stable Diffusion 3, and more
+- **Default Model**: black-forest-labs/FLUX-1-schnell:free
+- **Available Models**: FLUX-1-schnell (free), DALL-E 3, Stable Diffusion 3, and more
 - **Background Removal**: Automatic using rembg library
 - **Optimization**: Images resized to max 1024px dimension
 - **Formats**: PNG (for compatibility) + WebP (for performance)

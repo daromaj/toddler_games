@@ -24,7 +24,7 @@ on:
         description: 'AI model to use for image generation'
         required: false
         type: string
-        default: 'flux-pro/v1.1'
+        default: 'black-forest-labs/FLUX-1-schnell:free'
 
 jobs:
   generate-images:
