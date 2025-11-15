@@ -35,7 +35,7 @@ def get_api_key():
     return api_key
 
 
-def generate_image(api_key, prompt, model_name="flux-pro/v1.1"):
+def generate_image(api_key, prompt, model_name="black-forest-labs/FLUX-1-schnell:free"):
     """
     Generate an image using Image Router API.
 
@@ -43,7 +43,7 @@ def generate_image(api_key, prompt, model_name="flux-pro/v1.1"):
         api_key: Image Router API key
         prompt: Text description of the image to generate
         model_name: Model to use for image generation
-                   (default: flux-pro/v1.1)
+                   (default: black-forest-labs/FLUX-1-schnell:free)
 
     Returns:
         PIL Image object or None on failure
@@ -198,7 +198,7 @@ def load_prompts(prompts_file):
         sys.exit(1)
 
 
-def generate_category(api_key, category_data, output_dir, delay=2, model_name="flux-pro/v1.1"):
+def generate_category(api_key, category_data, output_dir, delay=2, model_name="black-forest-labs/FLUX-1-schnell:free"):
     """
     Generate all images for a category.
 
@@ -288,8 +288,8 @@ def main():
     parser.add_argument(
         '--model',
         type=str,
-        default='flux-pro/v1.1',
-        help='Image generation model to use (default: flux-pro/v1.1)'
+        default='black-forest-labs/FLUX-1-schnell:free',
+        help='Image generation model to use (default: black-forest-labs/FLUX-1-schnell:free)'
     )
 
     args = parser.parse_args()
