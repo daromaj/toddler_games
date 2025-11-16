@@ -79,6 +79,13 @@
       animation: float 2s ease-in-out infinite;
     }
 
+    .piano-key .key-icon img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
     .mode-selector {
       display: flex;
       gap: 15px;
@@ -141,6 +148,10 @@
         font-size: 28px;
         margin-bottom: 20px;
       }
+      .piano-key .key-icon img {
+        width: 28px;
+        height: 28px;
+      }
       .piano-key .note-name {
         bottom: 8px;
         font-size: 12px;
@@ -170,6 +181,10 @@
         font-size: 36px;
         margin-bottom: 25px;
       }
+      .piano-key .key-icon img {
+        width: 36px;
+        height: 36px;
+      }
       .piano-key .note-name {
         font-size: 16px;
       }
@@ -188,6 +203,10 @@
       .piano-key .key-icon {
         font-size: 72px;
         margin-bottom: 50px;
+      }
+      .piano-key .key-icon img {
+        width: 72px;
+        height: 72px;
       }
       .piano-key .note-name {
         font-size: 28px;
@@ -233,10 +252,26 @@
       { note: 'C2', frequency: 523.25, color: 'cyan', icon: '🎶', name: 'Do' }
     ];
 
+    // Helper function to create image with emoji fallback
+    function createImageElement(imagePath, emoji, altText) {
+      const img = document.createElement('img');
+      img.src = `../images/${imagePath}.webp`;
+      img.alt = altText;
+      img.onerror = function() {
+        // Try PNG fallback
+        this.onerror = function() {
+          // If both fail, use emoji
+          this.parentElement.innerHTML = emoji;
+        };
+        this.src = `../images/${imagePath}.png`;
+      };
+      return img;
+    }
+
     // Animal sound configurations
     const animalKeys = [
-      { name: 'Kot', icon: '🐱', color: 'red', sound: 'meow' },
-      { name: 'Pies', icon: '🐶', color: 'orange', sound: 'woof' },
+      { name: 'Kot', icon: '🐱', image: 'animals/cat', color: 'red', sound: 'meow' },
+      { name: 'Pies', icon: '🐶', image: 'animals/dog', color: 'orange', sound: 'woof' },
       { name: 'Krowa', icon: '🐮', color: 'yellow', sound: 'moo' },
       { name: 'Owca', icon: '🐑', color: 'green', sound: 'baa' },
       { name: 'Koń', icon: '🐴', color: 'blue', sound: 'neigh' },
@@ -302,10 +337,25 @@
       keys.forEach((key, index) => {
         const keyEl = document.createElement('div');
         keyEl.className = `piano-key key-${key.color}`;
-        keyEl.innerHTML = `
-          <div class="key-icon">${key.icon}</div>
-          <div class="note-name">${key.name}</div>
-        `;
+
+        // Create icon element
+        const iconEl = document.createElement('div');
+        iconEl.className = 'key-icon';
+
+        // Use image if available (for animals mode), otherwise use emoji
+        if (currentMode === 'animals' && key.image) {
+          const img = createImageElement(key.image, key.icon, key.name);
+          iconEl.appendChild(img);
+        } else {
+          iconEl.textContent = key.icon;
+        }
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'note-name';
+        nameEl.textContent = key.name;
+
+        keyEl.appendChild(iconEl);
+        keyEl.appendChild(nameEl);
 
         keyEl.style.animationDelay = (index * 0.1) + 's';
 
