@@ -38,6 +38,13 @@
       filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
     }
 
+    .character img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+    }
+
     .character.visible {
       opacity: 1;
       transform: scale(1);
@@ -187,6 +194,11 @@
         font-size: 150px;
       }
 
+      .character img {
+        width: 150px;
+        height: 150px;
+      }
+
       .instruction {
         font-size: 28px;
         bottom: 30px;
@@ -210,6 +222,11 @@
 
       .character {
         font-size: 120px;
+      }
+
+      .character img {
+        width: 120px;
+        height: 120px;
       }
 
       .instruction {
@@ -268,13 +285,29 @@
     let closeTimeout = null;
     let playCount = 0;
 
+    // Helper function to create image with emoji fallback
+    function createImageElement(imagePath, emoji, altText) {
+      const img = document.createElement('img');
+      img.src = `../images/${imagePath}.webp`;
+      img.alt = altText;
+      img.onerror = function() {
+        // Try PNG fallback
+        this.onerror = function() {
+          // If both fail, use emoji
+          this.parentElement.innerHTML = emoji;
+        };
+        this.src = `../images/${imagePath}.png`;
+      };
+      return img;
+    }
+
     // Characters that can appear
     const characters = [
-      { emoji: '🐰', name: 'królik', sound: 'Królik!' },
-      { emoji: '🐶', name: 'piesek', sound: 'Piesek!' },
-      { emoji: '🐱', name: 'kotek', sound: 'Kotek!' },
-      { emoji: '🐻', name: 'miś', sound: 'Miś!' },
-      { emoji: '🐘', name: 'słoń', sound: 'Słoń!' },
+      { emoji: '🐰', image: 'animals/rabbit', name: 'królik', sound: 'Królik!' },
+      { emoji: '🐶', image: 'animals/dog', name: 'piesek', sound: 'Piesek!' },
+      { emoji: '🐱', image: 'animals/cat', name: 'kotek', sound: 'Kotek!' },
+      { emoji: '🐻', image: 'animals/bear', name: 'miś', sound: 'Miś!' },
+      { emoji: '🐘', image: 'animals/elephant', name: 'słoń', sound: 'Słoń!' },
       { emoji: '🦁', name: 'lew', sound: 'Lew!' },
       { emoji: '🐼', name: 'panda', sound: 'Panda!' },
       { emoji: '🦊', name: 'lis', sound: 'Lis!' },
@@ -282,8 +315,18 @@
       { emoji: '🦉', name: 'sowa', sound: 'Sowa!' }
     ];
 
+    function updateCharacterDisplay() {
+      character.innerHTML = '';
+      if (currentCharacter.image) {
+        const img = createImageElement(currentCharacter.image, currentCharacter.emoji, currentCharacter.name);
+        character.appendChild(img);
+      } else {
+        character.textContent = currentCharacter.emoji;
+      }
+    }
+
     let currentCharacter = Utils.randomItem(characters);
-    character.textContent = currentCharacter.emoji;
+    updateCharacterDisplay();
 
     function openDoor() {
       if (isOpen) return;
@@ -343,7 +386,7 @@
       // Change to new random character
       setTimeout(() => {
         currentCharacter = Utils.randomItem(characters);
-        character.textContent = currentCharacter.emoji;
+        updateCharacterDisplay();
       }, 800);
 
       isOpen = false;
