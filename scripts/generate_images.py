@@ -307,7 +307,7 @@ def main():
         default=2,
         help='Delay between API calls in seconds'
     )
-    parser.add.argument(
+    parser.add_argument(
         '--model',
         type=str,
         default='black-forest-labs/FLUX-1-schnell:free',
